@@ -8,6 +8,7 @@
 
 #import "PIRedditOperation.h"
 #import "PIRedditCommon.h"
+#import "PIRedditSerializationStrategy.h"
 
 @interface PIRedditOperation ()
 
@@ -18,14 +19,40 @@
 
 @implementation PIRedditOperation
 
+@synthesize completion =_completion, serializationStrategy = _serializationStrategy;
+
 #pragma mark - Accessors
 
-- (void)setCompletion:(void (^)(NSHTTPURLResponse *response, NSError *error, NSData *responseData))completion {
-    if ([self isExecuting]) {
-        return;
+- (void)setCompletion:(void (^)(NSHTTPURLResponse *response, NSError *error, id responseObject))completion {
+    @synchronized(self) {
+        if ([self isExecuting]) {
+            return;
+        }
+        
+        _completion = [completion copy];
+    }
+}
+
+- (void (^)(NSHTTPURLResponse *, NSError *, id))completion {
+    @synchronized(self) {
+        return _completion;
+    }
+}
+
+- (PIRedditSerializationStrategy *)serializationStrategy {
+    @synchronized(self) {
+        if (!_serializationStrategy) {
+            _serializationStrategy = [[PIRedditSerializationStrategy alloc] initWithStrategyType:PIRedditSerializationStrategyJSON];
+        }
     }
     
-    _completion = [completion copy];
+    return _serializationStrategy;
+}
+
+- (void)setSerializationStrategy:(PIRedditSerializationStrategy *)serializationStrategy {
+    @synchronized(self) {
+        _serializationStrategy = serializationStrategy;
+    }
 }
 
 #pragma mark - 
@@ -43,7 +70,16 @@
         
         dispatch_group_async(group, dispatch_get_main_queue(), ^{
             NSHTTPURLResponse *HTTPResponse = GDDynamicCast(response, NSHTTPURLResponse);
-            self.completion(HTTPResponse, error, data);
+            id responseObject = nil;
+            NSError *completionError = error;
+            if (!completionError && data) {
+                NSError *serializationError = nil;
+                responseObject = [self.serializationStrategy serializeData:data error:&serializationError];
+                if (serializationError) {
+                    completionError = serializationError;
+                }
+            }
+            self.completion(HTTPResponse, completionError, responseObject);
         });
         
         dispatch_group_notify(group, dispatch_get_main_queue(), ^{
@@ -64,7 +100,7 @@
         if ([self isCancelled]) {
             [self willChangeValueForKey:NSStringFromSelector(@selector(isFinished))];
             [self didChangeValueForKey:NSStringFromSelector(@selector(isFinished))];
-            [self callCompletionWithResponse:nil error:[NSError errorWithDomain:@"com.pireddit" code:NSURLErrorCancelled userInfo:@{NSLocalizedDescriptionKey: @"Cancelled by user"}] data:nil];
+            [self callCompletionWithResponse:nil error:[NSError errorWithDomain:PIRedditErrorDomain code:NSURLErrorCancelled userInfo:@{NSLocalizedDescriptionKey: @"Cancelled by user"}] data:nil];
             return;
         }
         
@@ -118,7 +154,7 @@
 
 #pragma mark - Life Cycle
 
-+ (PIRedditOperation *)operationWithRequest:(NSURLRequest *)urlRequest session:(NSURLSession *)session completion:(void (^)(NSHTTPURLResponse *response, NSError *error, NSData *responseData))completion {
++ (PIRedditOperation *)operationWithRequest:(NSURLRequest *)urlRequest session:(NSURLSession *)session completion:(void (^)(NSHTTPURLResponse *response, NSError *error, id responseObject))completion {
     PIRedditOperation *retVal = [[self alloc] initWithRequest:urlRequest session:session];
     retVal.completion = completion;
     return retVal;
