@@ -20,7 +20,7 @@
 
 #pragma mark - Accessors
 
-- (void)setCompletion:(void (^)(NSHTTPURLResponse *, NSError *, id))completion {
+- (void)setCompletion:(void (^)(NSHTTPURLResponse *response, NSError *error, NSData *responseData))completion {
     if ([self isExecuting]) {
         return;
     }
@@ -48,13 +48,6 @@
                          [strongSelf didChangeValueForKey:NSStringFromSelector(@selector(isExecuting))];
                          
                          if (strongSelf.completion) {
-                             id responseObject = nil;
-                             if (!error) {
-                                 NSError *serializationError = nil;
-                                 responseObject = [NSJSONSerialization JSONObjectWithData:data options:0 error:&serializationError];
-                                 error = serializationError;
-                             }
-                             
                              static dispatch_group_t group = nil;
                              static dispatch_once_t onceToken;
                              dispatch_once(&onceToken, ^{
@@ -63,7 +56,7 @@
                              
                              dispatch_group_async(group, dispatch_get_main_queue(), ^{
                                  NSHTTPURLResponse *HTTPResponse = GDDynamicCast(response, NSHTTPURLResponse);
-                                 strongSelf.completion(HTTPResponse, error, responseObject);
+                                 strongSelf.completion(HTTPResponse, error, data);
                              });
                              
                              dispatch_group_notify(group, dispatch_get_main_queue(), ^{

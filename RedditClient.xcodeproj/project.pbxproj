@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9A06B5261BDBEEF5009F2EEC /* PIRedditRESTController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A06B5251BDBEEF5009F2EEC /* PIRedditRESTController.m */; };
 		9AC50A601BD8220900644F77 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 9AC50A5F1BD8220900644F77 /* main.m */; };
 		9AC50A631BD8220900644F77 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9AC50A621BD8220900644F77 /* AppDelegate.m */; };
 		9AC50A661BD8220900644F77 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9AC50A651BD8220900644F77 /* ViewController.m */; };
@@ -30,6 +31,8 @@
 
 /* Begin PBXFileReference section */
 		9A06B5231BDBEC57009F2EEC /* PIRedditCommon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PIRedditCommon.h; sourceTree = "<group>"; };
+		9A06B5241BDBEEF5009F2EEC /* PIRedditRESTController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PIRedditRESTController.h; sourceTree = "<group>"; };
+		9A06B5251BDBEEF5009F2EEC /* PIRedditRESTController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PIRedditRESTController.m; sourceTree = "<group>"; };
 		9AC50A5B1BD8220900644F77 /* RedditClient.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RedditClient.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9AC50A5F1BD8220900644F77 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		9AC50A611BD8220900644F77 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -135,6 +138,8 @@
 		9AEA7E541BDAE2F100B015E0 /* Networking */ = {
 			isa = PBXGroup;
 			children = (
+				9A06B5241BDBEEF5009F2EEC /* PIRedditRESTController.h */,
+				9A06B5251BDBEEF5009F2EEC /* PIRedditRESTController.m */,
 				9AEA7E551BDAE2F100B015E0 /* PIRedditOperation.h */,
 				9AEA7E561BDAE2F100B015E0 /* PIRedditOperation.m */,
 			);
@@ -244,6 +249,7 @@
 				9AC50A661BD8220900644F77 /* ViewController.m in Sources */,
 				9AC50A631BD8220900644F77 /* AppDelegate.m in Sources */,
 				9AC50A601BD8220900644F77 /* main.m in Sources */,
+				9A06B5261BDBEEF5009F2EEC /* PIRedditRESTController.m in Sources */,
 				9AEA7E571BDAE2F100B015E0 /* PIRedditOperation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

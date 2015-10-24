@@ -36,7 +36,7 @@
     XCTAssertEqualObjects(operation.request, _initialRequest);
     
     __block BOOL blockCheck = NO;
-    void(^completion)(NSHTTPURLResponse *, NSError *, id) = ^(NSHTTPURLResponse *response, NSError *error, id responseObject) {
+    void(^completion)(NSHTTPURLResponse *, NSError *, id) = ^(NSHTTPURLResponse *response, NSError *error, NSData *responseData) {
         blockCheck = YES;
     };
     
@@ -52,7 +52,7 @@
 
 - (void)testBasicRequest {
     XCTestExpectation *exp = [self expectationWithDescription:@(__PRETTY_FUNCTION__)];
-    PIRedditOperation *operation = [PIRedditOperation operationWithRequest:_initialRequest session:[NSURLSession sharedSession] completion:^(NSHTTPURLResponse *response, NSError *error, id responseObject) {
+    PIRedditOperation *operation = [PIRedditOperation operationWithRequest:_initialRequest session:[NSURLSession sharedSession] completion:^(NSHTTPURLResponse *response, NSError *error, NSData *responseData) {
         XCTAssertNotNil(response);
         XCTAssertTrue([response isKindOfClass:[NSHTTPURLResponse class]]);
         XCTAssertEqual(response.statusCode, 200);
@@ -74,7 +74,7 @@
 - (void)testTimeout {
     XCTestExpectation *exp = [self expectationWithDescription:@(__PRETTY_FUNCTION__)];
     _initialRequest.timeoutInterval = 0.0001;
-    PIRedditOperation *op = [PIRedditOperation operationWithRequest:_initialRequest session:[NSURLSession sharedSession] completion:^(NSHTTPURLResponse *response, NSError *error, id responseObject) {
+    PIRedditOperation *op = [PIRedditOperation operationWithRequest:_initialRequest session:[NSURLSession sharedSession] completion:^(NSHTTPURLResponse *response, NSError *error, NSData *responseData) {
         XCTAssertNil(response);
         XCTAssertNotNil(error);
         XCTAssertEqual(error.code, NSURLErrorTimedOut);
