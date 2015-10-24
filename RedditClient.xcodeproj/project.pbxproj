@@ -13,9 +13,9 @@
 		9AC50A691BD8220900644F77 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9AC50A671BD8220900644F77 /* Main.storyboard */; };
 		9AC50A6B1BD8220900644F77 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9AC50A6A1BD8220900644F77 /* Assets.xcassets */; };
 		9AC50A6E1BD8220900644F77 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9AC50A6C1BD8220900644F77 /* LaunchScreen.storyboard */; };
-		9AEA7E4E1BDACD0200B015E0 /* PIRedditOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9AEA7E4D1BDACD0200B015E0 /* PIRedditOperationTests.m */; settings = {ASSET_TAGS = (); }; };
-		9AEA7E521BDAE05200B015E0 /* XCTest+PIReddit.m in Sources */ = {isa = PBXBuildFile; fileRef = 9AEA7E511BDAE05200B015E0 /* XCTest+PIReddit.m */; settings = {ASSET_TAGS = (); }; };
-		9AEA7E571BDAE2F100B015E0 /* PIRedditOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 9AEA7E561BDAE2F100B015E0 /* PIRedditOperation.m */; settings = {ASSET_TAGS = (); }; };
+		9AEA7E4E1BDACD0200B015E0 /* PIRedditOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9AEA7E4D1BDACD0200B015E0 /* PIRedditOperationTests.m */; };
+		9AEA7E521BDAE05200B015E0 /* XCTest+PIReddit.m in Sources */ = {isa = PBXBuildFile; fileRef = 9AEA7E511BDAE05200B015E0 /* XCTest+PIReddit.m */; };
+		9AEA7E571BDAE2F100B015E0 /* PIRedditOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 9AEA7E561BDAE2F100B015E0 /* PIRedditOperation.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,6 +29,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		9A06B5231BDBEC57009F2EEC /* PIRedditCommon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PIRedditCommon.h; sourceTree = "<group>"; };
 		9AC50A5B1BD8220900644F77 /* RedditClient.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RedditClient.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9AC50A5F1BD8220900644F77 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		9AC50A611BD8220900644F77 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -125,6 +126,7 @@
 		9AEA7E531BDAE2F100B015E0 /* PIReddit */ = {
 			isa = PBXGroup;
 			children = (
+				9A06B5231BDBEC57009F2EEC /* PIRedditCommon.h */,
 				9AEA7E541BDAE2F100B015E0 /* Networking */,
 			);
 			path = PIReddit;

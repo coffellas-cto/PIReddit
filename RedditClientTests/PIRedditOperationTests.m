@@ -36,7 +36,7 @@
     XCTAssertEqualObjects(operation.request, _initialRequest);
     
     __block BOOL blockCheck = NO;
-    void(^completion)(NSURLResponse *, NSError *, id) = ^(NSURLResponse *response, NSError *error, id responseObject) {
+    void(^completion)(NSHTTPURLResponse *, NSError *, id) = ^(NSHTTPURLResponse *response, NSError *error, id responseObject) {
         blockCheck = YES;
     };
     
@@ -52,9 +52,10 @@
 
 - (void)testBasicRequest {
     XCTestExpectation *exp = [self expectationWithDescription:@(__PRETTY_FUNCTION__)];
-    PIRedditOperation *operation = [PIRedditOperation operationWithRequest:_initialRequest session:[NSURLSession sharedSession] completion:^(NSURLResponse *response, NSError *error, id responseObject) {
-        NSLog(@"ref to self: %@", self);
-        NSLog(@"%@\n%@\n%@", response, error, responseObject);
+    PIRedditOperation *operation = [PIRedditOperation operationWithRequest:_initialRequest session:[NSURLSession sharedSession] completion:^(NSHTTPURLResponse *response, NSError *error, id responseObject) {
+        XCTAssertNotNil(response);
+        XCTAssertTrue([response isKindOfClass:[NSHTTPURLResponse class]]);
+        XCTAssertEqual(response.statusCode, 200);
         XCTAssertFalse(operation.executing);
         [exp fulfill];
     }];

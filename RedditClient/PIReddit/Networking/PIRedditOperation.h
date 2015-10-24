@@ -28,7 +28,7 @@
  @discussion
  The completion block is removed after being called, thus eliminating retain-cycle effects. On the other hand, if you are not sure that the handler is ever going to be executed (e.g. you don't call `start` for the operation or don't add it to any queue), general rules for avoiding retain-cycles should be followed.
  */
-@property (readwrite, copy, nonatomic) void (^completion)(NSURLResponse *response, NSError *error, id responseObject);
+@property (readwrite, copy, nonatomic) void (^completion)(NSHTTPURLResponse *response, NSError *error, id responseObject);
 
 /**
  Initializes and returns a newly allocated operation object with the specified url request.
@@ -48,6 +48,6 @@
  @discussion
  The completion block is removed after being called, thus eliminating retain-cycle effects. On the other hand, if you are not sure that the handler is ever going to be executed (e.g. you don't call `start` for the operation or don't add it to any queue), general rules for avoiding retain-cycles should be followed.
  */
-+ (PIRedditOperation *)operationWithRequest:(NSURLRequest *)urlRequest session:(NSURLSession *)session completion:(void (^)(NSURLResponse *response, NSError *error, id responseObject))completion;
++ (PIRedditOperation *)operationWithRequest:(NSURLRequest *)urlRequest session:(NSURLSession *)session completion:(void (^)(NSHTTPURLResponse *response, NSError *error, id responseObject))completion;
 
 @end

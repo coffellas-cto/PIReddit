@@ -7,6 +7,7 @@
 //
 
 #import "PIRedditOperation.h"
+#import "PIRedditCommon.h"
 
 @interface PIRedditOperation ()
 
@@ -19,7 +20,7 @@
 
 #pragma mark - Accessors
 
-- (void)setCompletion:(void (^)(NSURLResponse *, NSError *, id))completion {
+- (void)setCompletion:(void (^)(NSHTTPURLResponse *, NSError *, id))completion {
     if ([self isExecuting]) {
         return;
     }
@@ -61,7 +62,8 @@
                              });
                              
                              dispatch_group_async(group, dispatch_get_main_queue(), ^{
-                                 strongSelf.completion(response, error, responseObject);
+                                 NSHTTPURLResponse *HTTPResponse = GDDynamicCast(response, NSHTTPURLResponse);
+                                 strongSelf.completion(HTTPResponse, error, responseObject);
                              });
                              
                              dispatch_group_notify(group, dispatch_get_main_queue(), ^{
@@ -117,7 +119,7 @@
 
 #pragma mark - Life Cycle
 
-+ (PIRedditOperation *)operationWithRequest:(NSURLRequest *)urlRequest session:(NSURLSession *)session completion:(void (^)(NSURLResponse *, NSError *, id))completion {
++ (PIRedditOperation *)operationWithRequest:(NSURLRequest *)urlRequest session:(NSURLSession *)session completion:(void (^)(NSHTTPURLResponse *, NSError *, id))completion {
     PIRedditOperation *retVal = [[self alloc] initWithRequest:urlRequest session:session];
     retVal.completion = completion;
     return retVal;
