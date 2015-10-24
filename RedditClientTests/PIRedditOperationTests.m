@@ -71,4 +71,17 @@
     XCTAssertTrue(operation.finished);
 }
 
+- (void)testTimeout {
+    XCTestExpectation *exp = [self expectationWithDescription:@(__PRETTY_FUNCTION__)];
+    _initialRequest.timeoutInterval = 0.0001;
+    PIRedditOperation *op = [PIRedditOperation operationWithRequest:_initialRequest session:[NSURLSession sharedSession] completion:^(NSHTTPURLResponse *response, NSError *error, id responseObject) {
+        XCTAssertNil(response);
+        XCTAssertNotNil(error);
+        XCTAssertEqual(error.code, NSURLErrorTimedOut);
+        [exp fulfill];
+    }];
+    [op start];
+    [self startExpectations];
+}
+
 @end
