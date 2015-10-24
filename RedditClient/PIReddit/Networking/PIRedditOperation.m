@@ -28,6 +28,35 @@
     _completion = [completion copy];
 }
 
+#pragma mark - 
+
+- (void)callCompletionWithResponse:(NSURLResponse *)response error:(NSError *)error data:(NSData *)data {
+    [self willChangeValueForKey:NSStringFromSelector(@selector(isExecuting))];
+    [self didChangeValueForKey:NSStringFromSelector(@selector(isExecuting))];
+    
+    if (self.completion) {
+        static dispatch_group_t group = nil;
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            group = dispatch_group_create();
+        });
+        
+        dispatch_group_async(group, dispatch_get_main_queue(), ^{
+            NSHTTPURLResponse *HTTPResponse = GDDynamicCast(response, NSHTTPURLResponse);
+            self.completion(HTTPResponse, error, data);
+        });
+        
+        dispatch_group_notify(group, dispatch_get_main_queue(), ^{
+            self.completion = nil;
+            [self willChangeValueForKey:NSStringFromSelector(@selector(isFinished))];
+            [self didChangeValueForKey:NSStringFromSelector(@selector(isFinished))];
+        });
+    } else if (!self.cancelled) {
+        [self willChangeValueForKey:NSStringFromSelector(@selector(isFinished))];
+        [self didChangeValueForKey:NSStringFromSelector(@selector(isFinished))];
+    }
+}
+
 #pragma mark - Overrides
 
 - (void)start {
@@ -35,6 +64,7 @@
         if ([self isCancelled]) {
             [self willChangeValueForKey:NSStringFromSelector(@selector(isFinished))];
             [self didChangeValueForKey:NSStringFromSelector(@selector(isFinished))];
+            [self callCompletionWithResponse:nil error:[NSError errorWithDomain:@"com.pireddit" code:NSURLErrorCancelled userInfo:@{NSLocalizedDescriptionKey: @"Cancelled by user"}] data:nil];
             return;
         }
         
@@ -43,31 +73,7 @@
                                     completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error)
                      {
                          __strong typeof (weakSelf) strongSelf = weakSelf;
-
-                         [strongSelf willChangeValueForKey:NSStringFromSelector(@selector(isExecuting))];
-                         [strongSelf didChangeValueForKey:NSStringFromSelector(@selector(isExecuting))];
-                         
-                         if (strongSelf.completion) {
-                             static dispatch_group_t group = nil;
-                             static dispatch_once_t onceToken;
-                             dispatch_once(&onceToken, ^{
-                                 group = dispatch_group_create();
-                             });
-                             
-                             dispatch_group_async(group, dispatch_get_main_queue(), ^{
-                                 NSHTTPURLResponse *HTTPResponse = GDDynamicCast(response, NSHTTPURLResponse);
-                                 strongSelf.completion(HTTPResponse, error, data);
-                             });
-                             
-                             dispatch_group_notify(group, dispatch_get_main_queue(), ^{
-                                 strongSelf.completion = nil;
-                                 [strongSelf willChangeValueForKey:NSStringFromSelector(@selector(isFinished))];
-                                 [strongSelf didChangeValueForKey:NSStringFromSelector(@selector(isFinished))];
-                             });
-                         } else if (!strongSelf.cancelled) {
-                             [strongSelf willChangeValueForKey:NSStringFromSelector(@selector(isFinished))];
-                             [strongSelf didChangeValueForKey:NSStringFromSelector(@selector(isFinished))];
-                         }
+                         [strongSelf callCompletionWithResponse:response error:error data:data];
                      }];
         [self willChangeValueForKey:NSStringFromSelector(@selector(isExecuting))];
         [self.task resume];
@@ -83,7 +89,7 @@
 }
 
 - (BOOL)isFinished {
-    return self.task.state == NSURLSessionTaskStateCompleted;
+    return [self isCancelled] || self.task.state == NSURLSessionTaskStateCompleted;
 }
 
 - (BOOL)isExecuting {
@@ -112,7 +118,7 @@
 
 #pragma mark - Life Cycle
 
-+ (PIRedditOperation *)operationWithRequest:(NSURLRequest *)urlRequest session:(NSURLSession *)session completion:(void (^)(NSHTTPURLResponse *, NSError *, id))completion {
++ (PIRedditOperation *)operationWithRequest:(NSURLRequest *)urlRequest session:(NSURLSession *)session completion:(void (^)(NSHTTPURLResponse *response, NSError *error, NSData *responseData))completion {
     PIRedditOperation *retVal = [[self alloc] initWithRequest:urlRequest session:session];
     retVal.completion = completion;
     return retVal;
