@@ -24,6 +24,9 @@
  an error if any;
  an object constructed from the response data of the request if any.
  Changes to the property are ignored once the operation starts.
+ 
+ @discussion
+ The completion block is removed after being called, thus eliminating retain-cycle effects. On the other hand, if you are not sure that the handler is ever going to be executed (e.g. you don't call `start` for the operation or don't add it to any queue), general rules for avoiding retain-cycles should be followed.
  */
 @property (readwrite, copy, nonatomic) void (^completion)(NSURLResponse *response, NSError *error, id responseObject);
 
@@ -41,6 +44,9 @@
  @param urlRequest The request object to be used by the operation.
  @param session The URL session to perform the task on.
  @param completion The block to be executed on the completion of a request. This block has no return value and takes three arguments: the response object; an error if any; the object constructed from the response data of the request if any.
+ 
+ @discussion
+ The completion block is removed after being called, thus eliminating retain-cycle effects. On the other hand, if you are not sure that the handler is ever going to be executed (e.g. you don't call `start` for the operation or don't add it to any queue), general rules for avoiding retain-cycles should be followed.
  */
 + (PIRedditOperation *)operationWithRequest:(NSURLRequest *)urlRequest session:(NSURLSession *)session completion:(void (^)(NSURLResponse *response, NSError *error, id responseObject))completion;
 
