@@ -54,6 +54,7 @@
     XCTestExpectation *exp = [self expectationWithDescription:@(__PRETTY_FUNCTION__)];
     PIRedditOperation *operation = [PIRedditOperation operationWithRequest:_initialRequest session:[NSURLSession sharedSession] completion:^(NSHTTPURLResponse *response, NSError *error, NSData *responseData) {
         XCTAssertNotNil(response);
+        XCTAssertNotNil(responseData);
         XCTAssertTrue([response isKindOfClass:[NSHTTPURLResponse class]]);
         XCTAssertEqual(response.statusCode, 200);
         XCTAssertFalse(operation.executing);
@@ -80,6 +81,31 @@
         XCTAssertEqual(error.code, NSURLErrorTimedOut);
         [exp fulfill];
     }];
+    [op start];
+    [self startExpectations];
+}
+
+- (void)testBadRequests {
+    XCTestExpectation *exp = [self expectationWithDescription:@(__PRETTY_FUNCTION__)];
+    // Hope this url is invalid :)
+    _initialRequest.URL = [NSURL URLWithString:@"https://blablavb493f02fh-2f-2-fn-23f23hf-923h8f320fh-23hf-23f-2h3-f23f923hf-23h-923hfh23-fh23-f92h3-fh23-f.195"];
+    PIRedditOperation *op = [PIRedditOperation operationWithRequest:_initialRequest session:[NSURLSession sharedSession] completion:^(NSHTTPURLResponse *response, NSError *error, NSData *responseData) {
+        XCTAssertNotNil(error);
+        XCTAssertEqual(error.code, NSURLErrorCannotFindHost);
+        [exp fulfill];
+    }];
+    [op start];
+    [self startExpectations];
+}
+
+- (void)testCancellation {
+    XCTestExpectation *exp = [self expectationWithDescription:@(__PRETTY_FUNCTION__)];
+    PIRedditOperation *op = [PIRedditOperation operationWithRequest:_initialRequest session:[NSURLSession sharedSession] completion:^(NSHTTPURLResponse *response, NSError *error, NSData *responseData) {
+        XCTAssertNotNil(error);
+        XCTAssertEqual(error.code, NSURLErrorCancelled);
+        [exp fulfill];
+    }];
+    [op cancel];
     [op start];
     [self startExpectations];
 }
