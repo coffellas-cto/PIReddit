@@ -9,6 +9,7 @@
 #import <XCTest/XCTest.h>
 #import "PIRedditOperation.h"
 #import "XCTest+PIReddit.h"
+#import "PIRedditSerializationStrategy.h"
 
 @interface PIRedditOperationTests : XCTestCase {
     NSMutableURLRequest *_initialRequest;
@@ -53,6 +54,7 @@
 - (void)testBasicRequest {
     XCTestExpectation *exp = [self expectationWithDescription:@(__PRETTY_FUNCTION__)];
     PIRedditOperation *operation = [PIRedditOperation operationWithRequest:_initialRequest session:[NSURLSession sharedSession] completion:^(NSHTTPURLResponse *response, NSError *error, NSData *responseData) {
+        XCTAssertNil(error);
         XCTAssertNotNil(response);
         XCTAssertNotNil(responseData);
         XCTAssertTrue([response isKindOfClass:[NSHTTPURLResponse class]]);
@@ -60,6 +62,9 @@
         XCTAssertFalse(operation.executing);
         [exp fulfill];
     }];
+    PIRedditSerializationStrategy *strategy = [[PIRedditSerializationStrategy alloc] initWithStrategyType:PIRedditSerializationStrategyPlainText];
+    strategy.plainTextEncoding = NSASCIIStringEncoding;
+    operation.serializationStrategy = strategy;
     
     XCTAssertFalse(operation.executing);
     XCTAssertFalse(operation.finished);

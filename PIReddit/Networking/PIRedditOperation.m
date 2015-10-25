@@ -68,6 +68,7 @@
             group = dispatch_group_create();
         });
         
+        // TODO: serialize not on main queue
         dispatch_group_async(group, dispatch_get_main_queue(), ^{
             NSHTTPURLResponse *HTTPResponse = GDDynamicCast(response, NSHTTPURLResponse);
             id responseObject = nil;

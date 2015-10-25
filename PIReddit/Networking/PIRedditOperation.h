@@ -33,7 +33,7 @@
 @property (readwrite, copy, atomic) void (^completion)(NSHTTPURLResponse *response, NSError *error, id responseObject);
 
 /**
- Strategy used to serialize data. Defaults strategy serializes to JSON.
+ Strategy used to serialize data. Default strategy serializes to JSON.
  */
 @property (readwrite, strong, atomic) PIRedditSerializationStrategy *serializationStrategy;
 

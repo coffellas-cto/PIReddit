@@ -128,8 +128,8 @@
 		9AC50A771BD8220900644F77 /* RedditClientTests */ = {
 			isa = PBXGroup;
 			children = (
-				9AEA7E4D1BDACD0200B015E0 /* PIRedditOperationTests.m */,
 				9A06B5271BDC08B4009F2EEC /* PIRedditRESTControllerTests.m */,
+				9AEA7E4D1BDACD0200B015E0 /* PIRedditOperationTests.m */,
 				9A06B5301BDC23AD009F2EEC /* PIRedditSerializationStrategyTests.m */,
 				9AC50A7A1BD8220900644F77 /* Info.plist */,
 				9AEA7E501BDAE05200B015E0 /* XCTest+PIReddit.h */,

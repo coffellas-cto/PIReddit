@@ -18,8 +18,12 @@
         case PIRedditSerializationStrategyJSON:
             retVal = [NSJSONSerialization JSONObjectWithData:data options:0 error:error];
             break;
+        case PIRedditSerializationStrategyPlainText:
+            retVal = [[NSString alloc] initWithData:data encoding:self.plainTextEncoding];
+            break;
             
         default:
+            retVal = data;
             break;
     }
     return retVal;

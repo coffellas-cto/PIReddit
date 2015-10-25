@@ -8,6 +8,7 @@
 
 #import "PIRedditRESTController.h"
 #import "PIRedditOperation.h"
+#import "PIRedditSerializationStrategy.h"
 
 @implementation PIRedditRESTController
 
@@ -37,21 +38,31 @@
                                  parameters:(NSDictionary *)parameters
                                  completion:(void (^)(NSError *error, id responseObject))completion
 {
+    return [self requestOperationWithMethod:HTTPMethod atPath:path parameters:parameters responseSerialization:nil completion:completion];
+}
+
+
+- (NSOperation *)requestOperationWithMethod:(NSString *)HTTPMethod
+                                     atPath:(NSString *)path
+                                 parameters:(NSDictionary *)parameters
+                      responseSerialization:(PIRedditSerializationStrategy *)responseSerialization
+                                 completion:(void (^)(NSError *error, id responseObject))completion
+{
     NSURL *URL = [NSURL URLWithString:path relativeToURL:self.baseURL];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:URL cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:self.timeoutInterval];
-    PIRedditOperation *op = [PIRedditOperation operationWithRequest:[request copy] session:self.session completion:^(NSHTTPURLResponse *response, NSError *error, NSData *responseData) {
+    PIRedditOperation *op = [PIRedditOperation operationWithRequest:[request copy] session:self.session completion:^(NSHTTPURLResponse *response, NSError *error, id responseObject) {
         if (completion) {
-            id responseObject = nil;
-            if (!error && responseData) {
-                // TODO: todo
-            }
-            
             completion(error, responseObject);
         }
     }];
     
+    if (responseSerialization) {
+        op.serializationStrategy = responseSerialization;
+    }
+    
     return op;
 }
+
 
 - (instancetype)initWithSession:(NSURLSession *)session baseURL:(NSURL *)baseURL
 {
