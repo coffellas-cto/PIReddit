@@ -10,6 +10,7 @@
 #import "XCTest+PIReddit.h"
 #import "PIRedditRESTController.h"
 #import "PIRedditSerializationStrategy.h"
+#import "PIRMockSession.h"
 
 @interface PIRedditRESTControllerTests : XCTestCase
 
@@ -46,6 +47,38 @@
         XCTAssertNil(error);
         XCTAssertNotNil(responseObject);
         XCTAssertTrue([responseObject isKindOfClass:[NSString class]]);
+        [exp fulfill];
+    }];
+    [op start];
+    
+    [self startExpectations];
+}
+
+- (void)testJSONRequestMockGET1 {
+    PIRMockSession *mockSession = [PIRMockSession new];
+    PIRedditRESTController *rest = [[PIRedditRESTController alloc] initWithSession:mockSession baseURL:[NSURL URLWithString:@"https://reddit.mock/mockapi/v1"]];
+    XCTestExpectation *exp = [self expectationWithDescription:@(__PRETTY_FUNCTION__)];
+    NSOperation *op = [rest requestOperationWithMethod:@"GET" atPath:@"me" parameters:@{@"showMockDummyResponse": @(YES)}  completion:^(NSError *error, id responseObject) {
+        XCTAssertNil(error);
+        XCTAssertTrue([responseObject isKindOfClass:[NSDictionary class]]);
+        XCTAssertTrue([GDDynamicCast(responseObject[@"mock"], NSString) isEqualToString:@"duck"]);
+        XCTAssertEqualObjects(responseObject[@"mockDummyResponse"], @(100));
+        [exp fulfill];
+    }];
+    [op start];
+    
+    [self startExpectations];
+}
+
+- (void)testJSONRequestMockGET2 {
+    PIRMockSession *mockSession = [PIRMockSession new];
+    PIRedditRESTController *rest = [[PIRedditRESTController alloc] initWithSession:mockSession baseURL:[NSURL URLWithString:@"https://reddit.mock/mockapi/v1"]];
+    XCTestExpectation *exp = [self expectationWithDescription:@(__PRETTY_FUNCTION__)];
+    NSOperation *op = [rest requestOperationWithMethod:@"GET" atPath:@"me" parameters:@{@"showMockDummyResponse": @(NO)}  completion:^(NSError *error, id responseObject) {
+        XCTAssertNil(error);
+        XCTAssertTrue([responseObject isKindOfClass:[NSDictionary class]]);
+        XCTAssertTrue([GDDynamicCast(responseObject[@"mock"], NSString) isEqualToString:@"duck"]);
+        XCTAssertEqualObjects(responseObject[@"newResponse"], @(11.111));
         [exp fulfill];
     }];
     [op start];

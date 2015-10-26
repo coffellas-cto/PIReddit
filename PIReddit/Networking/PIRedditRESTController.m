@@ -48,8 +48,33 @@
                       responseSerialization:(PIRedditSerializationStrategy *)responseSerialization
                                  completion:(void (^)(NSError *error, id responseObject))completion
 {
+    NSAssert(!parameters || [parameters isKindOfClass:[NSDictionary class]], nil);
+    NSString *paramsString = nil;
+    if (parameters) {
+        NSMutableArray *parametersPairsArray = [[NSMutableArray alloc] initWithCapacity:parameters.count];
+        for (id key in parameters) {
+            [parametersPairsArray addObject:[NSString stringWithFormat:@"%@=%@", [[key description] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[parameters[key] description] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+        }
+        paramsString = [parametersPairsArray componentsJoinedByString:@"&"];
+    }
+    
+    BOOL encodeParamsInURIForMethod = NO;
+    if (paramsString && (encodeParamsInURIForMethod = [self encodeParamsInURIForMethod:HTTPMethod])) {
+            path = [path stringByAppendingFormat:@"?%@", paramsString];
+    }
+    
     NSURL *URL = [NSURL URLWithString:path relativeToURL:self.baseURL];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:URL cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:self.timeoutInterval];
+    if (paramsString && !encodeParamsInURIForMethod) {
+        // Encode params in body
+        NSData *data = [paramsString dataUsingEncoding:NSUTF8StringEncoding];
+        if (data) {
+            [request setHTTPBody:data];
+        } else {
+            // TODO: Error
+        }
+    }
+    
     PIRedditOperation *op = [PIRedditOperation operationWithRequest:[request copy] session:self.session completion:^(NSHTTPURLResponse *response, NSError *error, id responseObject) {
         if (completion) {
             completion(error, responseObject);
@@ -63,6 +88,19 @@
     return op;
 }
 
+#pragma mark - Private Method
+
+- (BOOL)encodeParamsInURIForMethod:(NSString *)HTTPMethod {
+    static NSSet *s_PIRedditRESTControllerMethodsUseParamsInURI = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        s_PIRedditRESTControllerMethodsUseParamsInURI = [NSSet setWithObjects:@"GET", @"HEAD", @"DELETE", nil];
+    });
+    
+    return [s_PIRedditRESTControllerMethodsUseParamsInURI containsObject:HTTPMethod];
+}
+
+#pragma mark - Life Cycle
 
 - (instancetype)initWithSession:(NSURLSession *)session baseURL:(NSURL *)baseURL
 {
