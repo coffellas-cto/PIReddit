@@ -15,7 +15,7 @@ typedef NS_ENUM(NSUInteger, PIRedditSerializationStrategyType) {
 };
 
 /**
- Class used to convert (serialize) input raw data represented by `NSData` objects into one of the foundation basic objects.
+ Class used to convert (serialize) raw input data represented by `NSData` object into one of the foundation basic objects.
  */
 @interface PIRedditSerializationStrategy : NSObject
 
