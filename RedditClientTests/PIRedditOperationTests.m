@@ -32,8 +32,7 @@
 - (void)testCreation {
     PIRedditOperation *operation = [[PIRedditOperation alloc] initWithRequest:_initialRequest session:nil];
     XCTAssertNotNil(operation);
-    XCTAssertFalse(operation.request == _initialRequest);
-    XCTAssertTrue([operation.request isMemberOfClass:[NSURLRequest class]]);
+    XCTAssertTrue(operation.request == _initialRequest);
     XCTAssertEqualObjects(operation.request, _initialRequest);
     
     __block BOOL blockCheck = NO;
@@ -43,8 +42,7 @@
     
     operation = [PIRedditOperation operationWithRequest:_initialRequest session:nil completion:completion];
     XCTAssertNotNil(operation);
-    XCTAssertFalse(operation.request == _initialRequest);
-    XCTAssertTrue([operation.request isMemberOfClass:[NSURLRequest class]]);
+    XCTAssertTrue(operation.request == _initialRequest);
     XCTAssertEqualObjects(operation.request, _initialRequest);
     operation.completion(nil, nil, nil);
     XCTAssertTrue(blockCheck);

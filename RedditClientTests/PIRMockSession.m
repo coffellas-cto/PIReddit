@@ -24,7 +24,11 @@
     for (NSString *string in paramPairs) {
         NSArray *pair = [string componentsSeparatedByString:@"="];
         if (pair.count == 2) {
-            retVal[[pair[0] stringByRemovingPercentEncoding]] = [pair[1] stringByRemovingPercentEncoding];
+            id key = [pair[0] stringByRemovingPercentEncoding];
+            id value = [pair[1] stringByRemovingPercentEncoding];
+            if (key && value) {
+                retVal[key] = value;
+            }
         }
     }
     
@@ -39,12 +43,12 @@
     dispatch_async(dispatch_queue_create("mocktaskqueue", DISPATCH_QUEUE_CONCURRENT), ^{
         NSMutableDictionary *responseObject = [NSMutableDictionary new];
         
-        NSURLComponents *components = [[NSURLComponents alloc] initWithURL:_request.URL resolvingAgainstBaseURL:_request.URL.baseURL];
+        NSURLComponents *components = [[NSURLComponents alloc] initWithURL:_request.URL resolvingAgainstBaseURL:NO];
         NSError *error = [NSError errorWithDomain:@"dummy" code:-1000 userInfo:nil];
         if ([components.host isEqualToString:@"reddit.mock"]) {
             NSDictionary *paramsDic = [self paramsFromString:_request.HTTPBody ? [[NSString alloc] initWithData:_request.HTTPBody encoding:NSUTF8StringEncoding] : components.query];
             
-            if ([components.path isEqualToString:@"/mockapi/me"]) {
+            if ([components.path isEqualToString:@"/mockapi/v1/me"]) {
                 if ([_request.HTTPMethod isEqualToString:@"GET"]) {
                     error = nil;
                     responseObject[@"mock"] = @"duck";
@@ -52,6 +56,20 @@
                         responseObject[@"mockDummyResponse"] = @(100);
                     } else {
                         responseObject[@"newResponse"] = @(11.111);
+                    }
+                }
+            } else if ([components.path isEqualToString:@"/mockapi/v1/dummy"]) {
+                if ([_request.HTTPMethod isEqualToString:@"POST"]) {
+                    if (paramsDic[@"name"]) {
+                        responseObject[@"name"] = paramsDic[@"name"];
+                        error = nil;
+                    }
+                }
+            } else if ([components.path isEqualToString:@"/mockapi/v1/echo"]) {
+                if ([_request.HTTPMethod isEqualToString:@"POST"]) {
+                    if ([paramsDic isKindOfClass:[NSDictionary class]]) {
+                        [responseObject addEntriesFromDictionary:paramsDic];
+                        error = nil;
                     }
                 }
             }

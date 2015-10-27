@@ -48,12 +48,13 @@
                       responseSerialization:(PIRedditSerializationStrategy *)responseSerialization
                                  completion:(void (^)(NSError *error, id responseObject))completion
 {
+    NSParameterAssert(HTTPMethod);
     NSAssert(!parameters || [parameters isKindOfClass:[NSDictionary class]], nil);
     NSString *paramsString = nil;
     if (parameters) {
         NSMutableArray *parametersPairsArray = [[NSMutableArray alloc] initWithCapacity:parameters.count];
         for (id key in parameters) {
-            [parametersPairsArray addObject:[NSString stringWithFormat:@"%@=%@", [[key description] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[parameters[key] description] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+            [parametersPairsArray addObject:[NSString stringWithFormat:@"%@=%@", [[key description] stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet alphanumericCharacterSet]], [[parameters[key] description] stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet alphanumericCharacterSet]]]];
         }
         paramsString = [parametersPairsArray componentsJoinedByString:@"&"];
     }
@@ -65,6 +66,7 @@
     
     NSURL *URL = [NSURL URLWithString:path relativeToURL:self.baseURL];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:URL cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:self.timeoutInterval];
+    request.HTTPMethod = HTTPMethod;
     if (paramsString && !encodeParamsInURIForMethod) {
         // Encode params in body
         NSData *data = [paramsString dataUsingEncoding:NSUTF8StringEncoding];

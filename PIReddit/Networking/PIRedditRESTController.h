@@ -21,6 +21,8 @@
 @property (readwrite, strong, atomic) NSURLSession *session;
 /**
  The base URL for performing requests to addresses relative to it.
+ @discussion
+ Base URL string must end with a `/` if you want to include the last path part of it in . E.g. "https://example.com/api/v1" is not the same as "https://example.com/api/v1/". Please consult Relative Uniform Resource Locators RFC for more info https://tools.ietf.org/html/rfc1808 .
  */
 @property (readwrite, strong, atomic) NSURL *baseURL;
 
@@ -37,7 +39,7 @@
 /**
  Initializes and returns a newly allocated asynchronous operation object which manages the request at the specified path.
  @param HTTPMethod HTTP request method.
- @param path Path relative to `baseURL`.
+ @param path Path relative to `baseURL`. Should not be started with `/`.
  @param parameters Dictionary which represents parameters for the request.
  @param completion The block to be executed upon the completion of a request. This block has no return value and takes two arguments:
  the de-srialized response object; an error if any. It is always called on main thread.
@@ -54,7 +56,7 @@
 /**
  Initializes and returns a newly allocated asynchronous operation object which manages the request at the specified path.
  @param HTTPMethod HTTP request method.
- @param path Path relative to `baseURL`.
+ @param path Path relative to `baseURL`. Should not be started with `/`.
  @param parameters Dictionary which represents parameters for the request.
  @param responseSerialization  Strategy used to serialize data. Default strategy serializes to JSON.
  @param completion The block to be executed upon the completion of a request. This block has no return value and takes two arguments:

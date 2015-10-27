@@ -164,7 +164,7 @@
 - (instancetype)initWithRequest:(NSURLRequest *)urlRequest session:(NSURLSession *)session {
     self = [super init];
     if (self) {
-        _request = [[NSURLRequest alloc] initWithURL:urlRequest.URL cachePolicy:urlRequest.cachePolicy timeoutInterval:urlRequest.timeoutInterval];
+        _request = urlRequest;
         _session = session;
     }
     return self;

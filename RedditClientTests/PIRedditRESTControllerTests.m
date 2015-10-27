@@ -43,7 +43,7 @@
     XCTestExpectation *exp = [self expectationWithDescription:@(__PRETTY_FUNCTION__)];
     PIRedditSerializationStrategy *strategy = [[PIRedditSerializationStrategy alloc] initWithStrategyType:PIRedditSerializationStrategyPlainText];
     strategy.plainTextEncoding = NSASCIIStringEncoding;
-    NSOperation *op = [rest requestOperationWithMethod:@"GET" atPath:@"/" parameters:nil responseSerialization:strategy completion:^(NSError *error, id responseObject) {
+    NSOperation *op = [rest requestOperationWithMethod:@"GET" atPath:@"" parameters:nil responseSerialization:strategy completion:^(NSError *error, id responseObject) {
         XCTAssertNil(error);
         XCTAssertNotNil(responseObject);
         XCTAssertTrue([responseObject isKindOfClass:[NSString class]]);
@@ -56,7 +56,7 @@
 
 - (void)testJSONRequestMockGET1 {
     PIRMockSession *mockSession = [PIRMockSession new];
-    PIRedditRESTController *rest = [[PIRedditRESTController alloc] initWithSession:mockSession baseURL:[NSURL URLWithString:@"https://reddit.mock/mockapi/v1"]];
+    PIRedditRESTController *rest = [[PIRedditRESTController alloc] initWithSession:mockSession baseURL:[NSURL URLWithString:@"https://reddit.mock/mockapi/v1/"]];
     XCTestExpectation *exp = [self expectationWithDescription:@(__PRETTY_FUNCTION__)];
     NSOperation *op = [rest requestOperationWithMethod:@"GET" atPath:@"me" parameters:@{@"showMockDummyResponse": @(YES)}  completion:^(NSError *error, id responseObject) {
         XCTAssertNil(error);
@@ -72,7 +72,7 @@
 
 - (void)testJSONRequestMockGET2 {
     PIRMockSession *mockSession = [PIRMockSession new];
-    PIRedditRESTController *rest = [[PIRedditRESTController alloc] initWithSession:mockSession baseURL:[NSURL URLWithString:@"https://reddit.mock/mockapi/v1"]];
+    PIRedditRESTController *rest = [[PIRedditRESTController alloc] initWithSession:mockSession baseURL:[NSURL URLWithString:@"https://reddit.mock/mockapi/v1/"]];
     XCTestExpectation *exp = [self expectationWithDescription:@(__PRETTY_FUNCTION__)];
     NSOperation *op = [rest requestOperationWithMethod:@"GET" atPath:@"me" parameters:@{@"showMockDummyResponse": @(NO)}  completion:^(NSError *error, id responseObject) {
         XCTAssertNil(error);
@@ -86,4 +86,51 @@
     [self startExpectations];
 }
 
+- (void)testJSONRequestMockGETFail {
+    PIRMockSession *mockSession = [PIRMockSession new];
+    PIRedditRESTController *rest = [[PIRedditRESTController alloc] initWithSession:mockSession baseURL:[NSURL URLWithString:@"https://reddit.mock/mockapi/v1/"]];
+    XCTestExpectation *exp = [self expectationWithDescription:@(__PRETTY_FUNCTION__)];
+    NSOperation *op = [rest requestOperationWithMethod:@"GET" atPath:@"no_such_path" parameters:@{@"showMockDummyResponse": @(NO)}  completion:^(NSError *error, id responseObject) {
+        XCTAssertNotNil(error);
+        XCTAssertNil(responseObject);
+        [exp fulfill];
+    }];
+    [op start];
+    
+    [self startExpectations];
+}
+
+- (void)testJSONRequestMockPOST1 {
+    PIRMockSession *mockSession = [PIRMockSession new];
+    PIRedditRESTController *rest = [[PIRedditRESTController alloc] initWithSession:mockSession baseURL:[NSURL URLWithString:@"https://reddit.mock/mockapi/v1/"]];
+    XCTestExpectation *exp = [self expectationWithDescription:@(__PRETTY_FUNCTION__)];
+    NSOperation *op = [rest requestOperationWithMethod:@"POST" atPath:@"dummy" parameters:@{@"name": @"funny"}  completion:^(NSError *error, id responseObject) {
+        XCTAssertNil(error);
+        XCTAssertTrue([responseObject isKindOfClass:[NSDictionary class]]);
+        XCTAssertTrue([GDDynamicCast(responseObject[@"name"], NSString) isEqualToString:@"funny"]);
+        [exp fulfill];
+    }];
+    [op start];
+    
+    [self startExpectations];
+}
+
+- (void)testJSONRequestMockPOSTEcho {
+    PIRMockSession *mockSession = [PIRMockSession new];
+    PIRedditRESTController *rest = [[PIRedditRESTController alloc] initWithSession:mockSession baseURL:[NSURL URLWithString:@"https://reddit.mock/mockapi/v1/"]];
+    XCTestExpectation *exp = [self expectationWithDescription:@(__PRETTY_FUNCTION__)];
+    NSDictionary *params = @{@"test": @10,
+                             @11: @{@"11": @"12"},
+                             @"array": @[@"long string it is", @1000, @"OK"],
+                             @"dic": @{@"inside_me": @"smth"}};
+    NSOperation *op = [rest requestOperationWithMethod:@"POST" atPath:@"echo" parameters:params  completion:^(NSError *error, id responseObject) {
+        XCTAssertNil(error);
+        XCTAssertTrue([responseObject isKindOfClass:[NSDictionary class]]);
+        XCTAssertEqualObjects(GDDynamicCast(responseObject[@"test"], NSString), @"10");
+        [exp fulfill];
+    }];
+    [op start];
+    
+    [self startExpectations];
+}
 @end
