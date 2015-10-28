@@ -64,6 +64,11 @@
                         responseObject[@"name"] = paramsDic[@"name"];
                         error = nil;
                     }
+                } else if ([_request.HTTPMethod isEqualToString:@"PUT"]) {
+                    if (paramsDic[@"name"]) {
+                        responseObject[@"name"] = @"grummy";
+                        error = nil;
+                    }
                 }
             } else if ([components.path isEqualToString:@"/mockapi/v1/echo"]) {
                 if ([_request.HTTPMethod isEqualToString:@"POST"]) {

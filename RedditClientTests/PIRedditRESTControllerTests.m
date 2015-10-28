@@ -133,4 +133,20 @@
     
     [self startExpectations];
 }
+
+- (void)testJSONRequestMockPUT {
+    PIRMockSession *mockSession = [PIRMockSession new];
+    PIRedditRESTController *rest = [[PIRedditRESTController alloc] initWithSession:mockSession baseURL:[NSURL URLWithString:@"https://reddit.mock/mockapi/v1/"]];
+    XCTestExpectation *exp = [self expectationWithDescription:@(__PRETTY_FUNCTION__)];
+    NSOperation *op = [rest requestOperationWithMethod:@"PUT" atPath:@"dummy" parameters:@{@"name": @"funny"}  completion:^(NSError *error, id responseObject) {
+        XCTAssertNil(error);
+        XCTAssertTrue([responseObject isKindOfClass:[NSDictionary class]]);
+        XCTAssertTrue([GDDynamicCast(responseObject[@"name"], NSString) isEqualToString:@"grummy"]);
+        [exp fulfill];
+    }];
+    [op start];
+    
+    [self startExpectations];
+}
+
 @end
