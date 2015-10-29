@@ -13,6 +13,6 @@
 /**
  Initial access token to be inserted explicitly.
  */
-@property (readwrite, copy, atomic) NSString *initialAccessToken;
+- (void)setAccessToken:(NSString *)accessToken;
 
 @end

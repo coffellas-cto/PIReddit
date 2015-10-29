@@ -44,9 +44,6 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    // TODO: Uncomment when need again.
-    return;
-    
     NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"accessToken"];
     if (token) {
         [self startUsage];

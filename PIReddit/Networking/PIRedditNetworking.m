@@ -6,10 +6,9 @@
 //  Copyright © 2015 Alexey Gordiyenko. All rights reserved.
 //
 
-#import "PIRedditNetworking.h"
+#import "PIRedditNetworking_Private.h"
 #import "PIRedditRESTController.h"
 #import "PIRedditSerializationStrategy.h"
-#import "PIRedditNetworking_Private.h"
 
 @interface PIRedditNetworking ()
 

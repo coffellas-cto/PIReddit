@@ -10,6 +10,7 @@
 
 /**
  Class that sends requests to Reddit API.
+ @attention If you don't set the `encryptionKey` property, no encryption will be used for locally saved token.
  */
 @interface PIRedditNetworking : NSObject
 
@@ -29,6 +30,19 @@
  Current access token.
  */
 @property (readonly, copy, atomic) NSString *accessToken;
+/**
+ Key to encrypt locally saved token.
+ @discussion This value must be the same between app launches, otherwise restored token will be corrupted.
+ @attention No encryption will be used if you don't provide this key.
+ */
+@property (readwrite, copy, atomic) NSString *encryptionKey;
 
+/**
+ Processes Reddit's OAuth redirect URL.
+ @param redirectURL URL received in `AppDelegate`'s `application:openURL:options:` method.
+ @param error A pointer to `NSError *` object to be set if URL is not successfully processed or its content is unexpected.
+ @return `YES` no error occured, `NO` otherwise.
+ */
+- (BOOL)processRedirectURL:(NSURL *)redirectURL error:(NSError *__autoreleasing *)error;
 
 @end
