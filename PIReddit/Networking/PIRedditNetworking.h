@@ -45,4 +45,10 @@
  */
 - (BOOL)processRedirectURL:(NSURL *)redirectURL error:(NSError *__autoreleasing *)error;
 
+/**
+ Singleton accessor.
+ @return Static `PIRedditNetworking` singleton instance.
+ */
++ (instancetype)sharedInstance;
+
 @end

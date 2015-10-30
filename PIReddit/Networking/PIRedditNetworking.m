@@ -22,6 +22,12 @@
 
 #pragma mark - Accessors
 
+- (void)setAccessToken:(NSString *)accessToken {
+    @synchronized(self) {
+        _accessToken = accessToken;
+    }
+}
+
 - (PIRedditRESTController *)REST {
     if (!_REST) {
         NSURL *baseURL = [NSURL URLWithString:@"https://www.reddit.com/api/"];
@@ -31,5 +37,14 @@
     return _REST;
 }
 
++ (instancetype)sharedInstance {
+    static id sharedInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = [self new];
+    });
+    
+    return sharedInstance;
+}
 
 @end
