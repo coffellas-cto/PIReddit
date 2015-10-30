@@ -76,4 +76,8 @@
     XCTAssertEqualObjects(s, networking.encryptionKey);
 }
 
+- (void)testSearch {
+    [self setupNetworkingWithUserAgent:@"RedditClientTestiOS" redirectURI:@"testredditclient://apiredirect" clientName:@"nhFJDb_f9RYThw" accessToken:@"45906542-5-78a6w0jrIO6ZcMjCS2jZTla3g" encryptionKey:@""];
+}
+
 @end

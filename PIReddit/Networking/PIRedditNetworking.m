@@ -30,7 +30,7 @@
 
 - (PIRedditRESTController *)REST {
     if (!_REST) {
-        NSURL *baseURL = [NSURL URLWithString:@"https://www.reddit.com/api/"];
+        NSURL *baseURL = [NSURL URLWithString:@"https://oauth.reddit.com/"];
         _REST = [[PIRedditRESTController alloc] initWithSession:[NSURLSession sharedSession] baseURL:baseURL];
     }
     

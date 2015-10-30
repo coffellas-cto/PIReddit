@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+typedef void(^PIRedditNetworkingCompletion)(NSError *error, id responseObject);
+
 /**
  Class that sends requests to Reddit API.
  @attention If you don't set the `encryptionKey` property, no encryption will be used for locally saved token.
@@ -44,6 +46,19 @@
  @return `YES` no error occured, `NO` otherwise.
  */
 - (BOOL)processRedirectURL:(NSURL *)redirectURL error:(NSError *__autoreleasing *)error;
+
+// TODO:
+// https://www.reddit.com/dev/api/oauth#GET_search
+
+/**
+ Search links page on Reddit.
+ @param searchTerm A string to search for (512 characters maximum).
+ @param limit The maximum number of items desired (default: 25, maximum: 100).
+ @param completion Block to be called after response is received.
+ */
+- (void)searchFor:(NSString *)searchTerm
+            limit:(NSUInteger)limit
+       completion:(PIRedditNetworkingCompletion)completion;
 
 /**
  Singleton accessor.
