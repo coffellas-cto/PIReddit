@@ -29,11 +29,17 @@
     [super tearDown];
 }
 
+- (void)testInit {
+    PIRedditOperation *op = [[PIRedditOperation alloc] init];
+    XCTAssertNil(op.request);
+}
+
 - (void)testCreation {
     PIRedditOperation *operation = [[PIRedditOperation alloc] initWithRequest:_initialRequest session:nil];
     XCTAssertNotNil(operation);
     XCTAssertTrue(operation.request == _initialRequest);
     XCTAssertEqualObjects(operation.request, _initialRequest);
+    XCTAssertTrue(operation.asynchronous);
     
     __block BOOL blockCheck = NO;
     void(^completion)(NSHTTPURLResponse *, NSError *, id) = ^(NSHTTPURLResponse *response, NSError *error, NSData *responseData) {

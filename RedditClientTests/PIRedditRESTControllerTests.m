@@ -38,6 +38,18 @@
     XCTAssertEqualObjects(rest.additionalHTTPHeaders, @{@"User-Agent": @"PIReddit"});
 }
 
+- (void)testInit {
+    PIRedditRESTController *rest = [[PIRedditRESTController alloc] init];
+    XCTAssertNil(rest.baseURL);
+    XCTAssertNil(rest.session);
+}
+
+- (void)testTimeoutInvariant {
+    PIRedditRESTController *rest = [[PIRedditRESTController alloc] initWithSession:[NSURLSession sharedSession] baseURL:[NSURL URLWithString:@"https://google.com"]];
+    rest.timeoutInterval = 12.0;
+    XCTAssertEqual(rest.timeoutInterval, 12.0);
+}
+
 - (void)testOperation {
     PIRedditRESTController *rest = [[PIRedditRESTController alloc] initWithSession:[NSURLSession sharedSession] baseURL:[NSURL URLWithString:@"https://google.com"]];
     XCTestExpectation *exp = [self expectationWithDescription:@(__PRETTY_FUNCTION__)];

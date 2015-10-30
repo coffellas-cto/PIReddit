@@ -16,4 +16,14 @@
 #define GDDynamicCast(x, c) ((c *)([x isKindOfClass:[c class]] ? x : nil))
 #endif
 
+
+#ifndef XLog
+// Debug-only logging
+#ifdef DEBUG
+#define XLog(format, ...) NSLog((@"%s[%d] " format), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__)
+#else
+#define XLog(...)
+#endif
+#endif
+
 #endif /* PIRedditCommon_h */

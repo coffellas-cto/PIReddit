@@ -59,4 +59,13 @@
     XCTAssertNil(restoredDic);
 }
 
+- (void)testNone {
+    PIRedditSerializationStrategy *strategy = [[PIRedditSerializationStrategy alloc] initWithStrategyType:PIRedditSerializationStrategyNone];
+    id test = @"test";
+    NSError *error;
+    id serialized = [strategy serializeData:test error:&error];
+    XCTAssertNil(error);
+    XCTAssertEqualObjects(test, serialized);
+}
+
 @end
