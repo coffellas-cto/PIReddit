@@ -62,7 +62,7 @@
  @param path Path relative to `baseURL`. Should not be started with `/`.
  @param parameters Dictionary which represents parameters for the request.
  @param completion The block to be executed upon the completion of a request. This block has no return value and takes three arguments:
- an error if any; the de-srialized response object; original request. It is always called on main thread.
+ an error if any; the de-serialized response object; original request. It is always called on main thread.
  
  @return Newly allocated operation object.
  
@@ -80,7 +80,7 @@
  @param parameters Dictionary which represents parameters for the request.
  @param responseSerialization  Strategy used to serialize data. Default strategy serializes to JSON.
  @param completion The block to be executed upon the completion of a request. This block has no return value and takes three arguments:
- an error if any; the de-srialized response object; original request. It is always called on main thread.
+ an error if any; the de-serialized response object; original request. It is always called on main thread.
  
  @return Newly allocated operation object.
  
@@ -92,6 +92,17 @@
                       responseSerialization:(PIRedditSerializationStrategy *)responseSerialization
                                  completion:(void (^)(NSError *error, id responseObject, NSURLRequest *originalRequest))completion;
 
+/**
+ Initializes and returns a newly allocated asynchronous operation object which manages the request at the specified path.
+ @param urlRequest The request object to be used by the operation.
+ @param responseSerialization  Strategy used to serialize data. Default strategy serializes to JSON.
+ @param completion The block to be executed upon the completion of a request. This block has no return value and takes three arguments:
+ an error if any; the de-serialized response object; original request. It is always called on main thread.
+ 
+ @return Newly allocated operation object.
+ 
+ @discussion The returned operation is not started immediately. You must add it to operation queue or fire manually.
+ */
 - (NSOperation *)requestOperationWithRequest:(NSURLRequest *)urlRequest
                        responseSerialization:(PIRedditSerializationStrategy *)responseSerialization
                                   completion:(void (^)(NSError *error, id responseObject, NSURLRequest *originalRequest))completion;
