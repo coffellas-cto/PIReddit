@@ -12,7 +12,6 @@
 		9AC50A601BD8220900644F77 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 9AC50A5F1BD8220900644F77 /* main.m */; };
 		9AC50A631BD8220900644F77 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9AC50A621BD8220900644F77 /* AppDelegate.m */; };
 		9AC50A661BD8220900644F77 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9AC50A651BD8220900644F77 /* ViewController.m */; };
-		9AC50A691BD8220900644F77 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9AC50A671BD8220900644F77 /* Main.storyboard */; };
 		9AC50A6B1BD8220900644F77 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9AC50A6A1BD8220900644F77 /* Assets.xcassets */; };
 		9AC50A6E1BD8220900644F77 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9AC50A6C1BD8220900644F77 /* LaunchScreen.storyboard */; };
 		9AC7EBBC1BDC282D000949A0 /* PIRedditConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 9AC7EBB81BDC282D000949A0 /* PIRedditConstants.m */; };
@@ -46,7 +45,6 @@
 		9AC50A621BD8220900644F77 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		9AC50A641BD8220900644F77 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		9AC50A651BD8220900644F77 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
-		9AC50A681BD8220900644F77 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		9AC50A6A1BD8220900644F77 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9AC50A6D1BD8220900644F77 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9AC50A6F1BD8220900644F77 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -119,7 +117,6 @@
 				9AC7EBAE1BDC282D000949A0 /* PIReddit */,
 				9AC50A641BD8220900644F77 /* ViewController.h */,
 				9AC50A651BD8220900644F77 /* ViewController.m */,
-				9AC50A671BD8220900644F77 /* Main.storyboard */,
 				9AC50A6A1BD8220900644F77 /* Assets.xcassets */,
 				9AC50A6C1BD8220900644F77 /* LaunchScreen.storyboard */,
 				9AC50A6F1BD8220900644F77 /* Info.plist */,
@@ -272,7 +269,6 @@
 			files = (
 				9AC50A6E1BD8220900644F77 /* LaunchScreen.storyboard in Resources */,
 				9AC50A6B1BD8220900644F77 /* Assets.xcassets in Resources */,
-				9AC50A691BD8220900644F77 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -326,14 +322,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		9AC50A671BD8220900644F77 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				9AC50A681BD8220900644F77 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		9AC50A6C1BD8220900644F77 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (

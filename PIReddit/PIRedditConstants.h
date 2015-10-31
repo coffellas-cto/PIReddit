@@ -29,4 +29,5 @@
 
 #import <Foundation/Foundation.h>
 
+extern NSString * const PIRedditURLErrorDomain;
 extern NSString * const PIRedditErrorDomain;

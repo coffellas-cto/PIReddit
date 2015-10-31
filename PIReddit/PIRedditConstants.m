@@ -29,4 +29,5 @@
 
 #import "PIRedditConstants.h"
 
+NSString * const PIRedditURLErrorDomain = @"PIRedditURLErrorDomain";
 NSString * const PIRedditErrorDomain = @"PIRedditErrorDomain";

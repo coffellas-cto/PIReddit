@@ -29,6 +29,7 @@
 #import "PIRedditRESTController.h"
 #import "PIRedditOperation.h"
 #import "PIRedditSerializationStrategy.h"
+#import "PIRedditCommon.h"
 
 @implementation PIRedditRESTController {
     NSLock *_headersLock;
@@ -120,6 +121,12 @@
 {
     PIRedditOperation *op = [PIRedditOperation operationWithRequest:urlRequest session:self.session completion:^(NSHTTPURLResponse *response, NSError *error, id responseObject) {
         if (completion) {
+            if (!error) {
+                if (response.statusCode > 399 && response.statusCode <= 599) {
+                    error = [NSError errorWithDomain:PIRedditURLErrorDomain code:response.statusCode userInfo:@{NSLocalizedDescriptionKey: [NSHTTPURLResponse localizedStringForStatusCode:response.statusCode]}];
+                }
+            }
+            
             dispatch_async(dispatch_get_main_queue(), ^{
                 completion(error, responseObject, urlRequest);
             });

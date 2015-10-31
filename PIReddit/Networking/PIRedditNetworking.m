@@ -33,7 +33,10 @@
 NSString * const kPIRHTTPMethodGET = @"GET";
 NSString * const kPIRHTTPMethodPOST = @"POST";
 
-@interface PIRedditNetworking ()
+@interface PIRedditNetworking () {
+    NSLock *_tokenRefreshLock;
+    dispatch_queue_t _tokenRefreshQueue;
+}
 
 @property (readonly, nonatomic) PIRedditRESTController *REST;
 @property (readonly, nonatomic) NSDictionary *additionalHTTPHeaders;
@@ -114,11 +117,25 @@ NSString * const kPIRHTTPMethodPOST = @"POST";
 - (NSOperation *)requestOperationWithMethod:(NSString *)HTTPMethod
                                      atPath:(NSString *)path
                                  parameters:(NSDictionary *)parameters
+                                 completion:(void (^)(NSError *error, id responseObject))completion {
+    return [self requestOperationWithMethod:HTTPMethod atPath:path parameters:parameters allowReauth:YES completion:completion];
+}
+
+- (NSOperation *)requestOperationWithMethod:(NSString *)HTTPMethod
+                                     atPath:(NSString *)path
+                                 parameters:(NSDictionary *)parameters
+                                allowReauth:(BOOL)allowReauth
                                  completion:(void (^)(NSError *error, id responseObject))completion
 {
-    NSOperation *retVal = [self.REST requestOperationWithMethod:HTTPMethod atPath:path parameters:parameters responseSerialization:nil completion:completion ? ^(NSError *error, id responseObject, NSURLRequest *originalRequest) {
+    NSOperation *retVal = [self.REST requestOperationWithMethod:HTTPMethod
+                                                         atPath:path
+                                                     parameters:parameters
+                                          responseSerialization:nil
+                                                     completion:completion ?
+                           ^(NSError *error, id responseObject, NSURLRequest *originalRequest)
+    {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [self processServerResponseError:error responseObject:responseObject originalRequest:originalRequest completion:completion];
+            [self processServerResponseError:error responseObject:responseObject originalRequest:originalRequest allowReauth:allowReauth completion:completion];
         });
     } : nil];
     
@@ -130,6 +147,7 @@ NSString * const kPIRHTTPMethodPOST = @"POST";
 - (void)processServerResponseError:(NSError *)error
                     responseObject:(id)responseObject
                    originalRequest:(NSURLRequest *)originalRequest
+                       allowReauth:(BOOL)allowReauth
                         completion:(PIRedditNetworkingCompletion)completion
 {
     NSParameterAssert(completion);
@@ -138,12 +156,61 @@ NSString * const kPIRHTTPMethodPOST = @"POST";
     NSError *retValError;
     id retValObject;
     if (error) {
+        switch (error.code) {
+            case 401:
+            {
+                dispatch_async(_tokenRefreshQueue, ^{
+                    NSString *oldToken = self.accessToken;
+                    [_tokenRefreshLock lock];
+                    if ([self.accessToken isEqualToString:oldToken]) {
+                        // Token is the same. Must reauthorize
+                        [self refreshTokenWithCompletion:^(NSError *tokenError, NSString *newToken) {
+                            dispatch_async(_tokenRefreshQueue, ^{
+                                [_tokenRefreshLock unlock];
+                                if (tokenError) {
+                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                        completion(tokenError, nil);
+                                    });
+                                } else {
+                                    self.accessToken = newToken;
+                                    // TODO: resend request.
+                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                        completion(nil, nil);
+                                    });
+                                }
+                            });
+                        }];
+                    } else {
+                        // Previous token refresh operation was a success.
+                        [_tokenRefreshLock unlock];
+                        // TODO: resend request.
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            completion(nil, nil);
+                        });
+                    }
+                });
+            }
+                return;
+                
+            default:
+                retValError = error;
+                break;
+        }
     } else {
     }
     
     dispatch_async(dispatch_get_main_queue(), ^{
         completion(retValError, retValObject);
     });
+}
+
+#pragma mark - Token
+
+- (void)refreshTokenWithCompletion:(void(^)(NSError *error, NSString *newToken))completion {
+    // TODO:
+    if (completion) {
+        completion(nil, @"");
+    }
 }
 
 #pragma mark - KVO
@@ -169,6 +236,8 @@ NSString * const kPIRHTTPMethodPOST = @"POST";
     if (self) {
         [self addObserver:self forKeyPath:NSStringFromSelector(@selector(accessToken)) options:NSKeyValueObservingOptionNew context:NULL];
         [self addObserver:self forKeyPath:NSStringFromSelector(@selector(userAgent)) options:NSKeyValueObservingOptionNew context:NULL];
+        _tokenRefreshLock = [NSLock new];
+        _tokenRefreshQueue = dispatch_queue_create("reddit_token_refresh", 0);
     }
     return self;
 }
