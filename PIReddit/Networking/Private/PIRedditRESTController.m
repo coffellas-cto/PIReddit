@@ -30,11 +30,19 @@
 #import "PIRedditOperation.h"
 #import "PIRedditSerializationStrategy.h"
 
-@implementation PIRedditRESTController
+@implementation PIRedditRESTController {
+    NSLock *_headersLock;
+}
 
 @synthesize timeoutInterval = _timeoutInterval;
 
 #pragma mark - Accessors
+
+- (void)setAdditionalHTTPHeaders:(NSDictionary *)additionalHTTPHeaders {
+    [_headersLock lock];
+    _additionalHTTPHeaders = additionalHTTPHeaders;
+    [_headersLock unlock];
+}
 
 - (NSTimeInterval)timeoutInterval {
     NSTimeInterval retVal;
@@ -56,7 +64,7 @@
 - (NSOperation *)requestOperationWithMethod:(NSString *)HTTPMethod
                                      atPath:(NSString *)path
                                  parameters:(NSDictionary *)parameters
-                                 completion:(void (^)(NSError *error, id responseObject))completion
+                                 completion:(void (^)(NSError *error, id responseObject, NSURLRequest *originalRequest))completion
 {
     return [self requestOperationWithMethod:HTTPMethod atPath:path parameters:parameters responseSerialization:nil completion:completion];
 }
@@ -66,7 +74,7 @@
                                      atPath:(NSString *)path
                                  parameters:(NSDictionary *)parameters
                       responseSerialization:(PIRedditSerializationStrategy *)responseSerialization
-                                 completion:(void (^)(NSError *error, id responseObject))completion
+                                 completion:(void (^)(NSError *error, id responseObject, NSURLRequest *originalRequest))completion
 {
     NSParameterAssert(HTTPMethod);
     NSAssert(!parameters || [parameters isKindOfClass:[NSDictionary class]], nil);
@@ -87,6 +95,12 @@
     NSURL *URL = [NSURL URLWithString:path relativeToURL:self.baseURL];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:URL cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:self.timeoutInterval];
     request.HTTPMethod = HTTPMethod;
+    [_headersLock lock];
+    for (id key in self.additionalHTTPHeaders) {
+        [request setValue:self.additionalHTTPHeaders[key] forHTTPHeaderField:key];
+    }
+    [_headersLock unlock];
+    
     if (paramsString && !encodeParamsInURIForMethod) {
         // Encode params in body
         NSData *data = [paramsString dataUsingEncoding:NSUTF8StringEncoding];
@@ -97,9 +111,18 @@
         }
     }
     
-    PIRedditOperation *op = [PIRedditOperation operationWithRequest:[request copy] session:self.session completion:^(NSHTTPURLResponse *response, NSError *error, id responseObject) {
+    return [self requestOperationWithRequest:[request copy] responseSerialization:responseSerialization completion:completion];
+}
+
+- (NSOperation *)requestOperationWithRequest:(NSURLRequest *)urlRequest
+                       responseSerialization:(PIRedditSerializationStrategy *)responseSerialization
+                                  completion:(void (^)(NSError *error, id responseObject, NSURLRequest *originalRequest))completion
+{
+    PIRedditOperation *op = [PIRedditOperation operationWithRequest:urlRequest session:self.session completion:^(NSHTTPURLResponse *response, NSError *error, id responseObject) {
         if (completion) {
-            completion(error, responseObject);
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion(error, responseObject, urlRequest);
+            });
         }
     }];
     
@@ -130,6 +153,7 @@
     if (self) {
         _session = session;
         _baseURL = baseURL;
+        _headersLock = [NSLock new];
     }
     return self;
 }

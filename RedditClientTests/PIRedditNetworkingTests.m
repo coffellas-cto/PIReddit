@@ -41,6 +41,14 @@
     networking.encryptionKey = encryptionKey;
 }
 
+- (void)properSetup {
+    [self setupNetworkingWithUserAgent:@"RedditClientTestiOS"
+                           redirectURI:@"testredditclient://apiredirect"
+                            clientName:@"nhFJDb_f9RYThw"
+                           accessToken:@"45906542-5-78a6w0jrIO6ZcMjCS2jZTla3g"
+                         encryptionKey:@"q-nv2-tnt-v3t-q53-qt474-t"];
+}
+
 - (void)testUserAgentInvariant {
     NSString *s = @"userAgent";
     networking = [PIRedditNetworking new];
@@ -77,7 +85,15 @@
 }
 
 - (void)testSearch {
-    [self setupNetworkingWithUserAgent:@"RedditClientTestiOS" redirectURI:@"testredditclient://apiredirect" clientName:@"nhFJDb_f9RYThw" accessToken:@"45906542-5-78a6w0jrIO6ZcMjCS2jZTla3g" encryptionKey:@""];
+    [self properSetup];
+    XCTestExpectation *exp = [self expectationWithDescription:@(__PRETTY_FUNCTION__)];
+    [networking searchFor:@"games" limit:0 completion:^(NSError *error, id responseObject) {
+        XCTAssertNil(error);
+        XCTAssertNotNil(responseObject);
+        [exp fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:1000 handler:nil];
 }
 
 @end

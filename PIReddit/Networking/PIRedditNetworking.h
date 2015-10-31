@@ -60,6 +60,11 @@ typedef void(^PIRedditNetworkingCompletion)(NSError *error, id responseObject);
 @property (readwrite, copy, atomic) NSString *encryptionKey;
 
 /**
+ Operation queue on which all requests are executed.
+ */
+@property (readonly, strong, nonatomic) NSOperationQueue *operationQueue;
+
+/**
  Processes Reddit's OAuth redirect URL.
  @param redirectURL URL received in `AppDelegate`'s `application:openURL:options:` method.
  @param error A pointer to `NSError *` object to be set if URL is not successfully processed or its content is unexpected.
@@ -75,8 +80,9 @@ typedef void(^PIRedditNetworkingCompletion)(NSError *error, id responseObject);
  @param searchTerm A string to search for (512 characters maximum).
  @param limit The maximum number of items desired (default: 25, maximum: 100).
  @param completion Block to be called after response is received.
+ @return Operation object.
  */
-- (void)searchFor:(NSString *)searchTerm
+- (NSOperation *)searchFor:(NSString *)searchTerm
             limit:(NSUInteger)limit
        completion:(PIRedditNetworkingCompletion)completion;
 

@@ -49,7 +49,7 @@
 /**
  Additional HTTP headers to send with every request.
  */
-@property (readwrite, strong, atomic) NSDictionary *additionalHTTPHeaders;
+@property (readwrite, strong, nonatomic) NSDictionary *additionalHTTPHeaders;
 
 /**
  The timeout interval for the request. Default is 30 sec.
@@ -61,8 +61,8 @@
  @param HTTPMethod HTTP request method.
  @param path Path relative to `baseURL`. Should not be started with `/`.
  @param parameters Dictionary which represents parameters for the request.
- @param completion The block to be executed upon the completion of a request. This block has no return value and takes two arguments:
- the de-srialized response object; an error if any. It is always called on main thread.
+ @param completion The block to be executed upon the completion of a request. This block has no return value and takes three arguments:
+ an error if any; the de-srialized response object; original request. It is always called on main thread.
  
  @return Newly allocated operation object.
  
@@ -71,7 +71,7 @@
 - (NSOperation *)requestOperationWithMethod:(NSString *)HTTPMethod
                                      atPath:(NSString *)path
                                  parameters:(NSDictionary *)parameters
-                                 completion:(void(^)(NSError *error, id responseObject))completion;
+                                 completion:(void (^)(NSError *error, id responseObject, NSURLRequest *originalRequest))completion;
 
 /**
  Initializes and returns a newly allocated asynchronous operation object which manages the request at the specified path.
@@ -79,8 +79,8 @@
  @param path Path relative to `baseURL`. Should not be started with `/`.
  @param parameters Dictionary which represents parameters for the request.
  @param responseSerialization  Strategy used to serialize data. Default strategy serializes to JSON.
- @param completion The block to be executed upon the completion of a request. This block has no return value and takes two arguments:
- the de-srialized response object; an error if any. It is always called on main thread.
+ @param completion The block to be executed upon the completion of a request. This block has no return value and takes three arguments:
+ an error if any; the de-srialized response object; original request. It is always called on main thread.
  
  @return Newly allocated operation object.
  
@@ -90,7 +90,11 @@
                                      atPath:(NSString *)path
                                  parameters:(NSDictionary *)parameters
                       responseSerialization:(PIRedditSerializationStrategy *)responseSerialization
-                                 completion:(void(^)(NSError *error, id responseObject))completion;
+                                 completion:(void (^)(NSError *error, id responseObject, NSURLRequest *originalRequest))completion;
+
+- (NSOperation *)requestOperationWithRequest:(NSURLRequest *)urlRequest
+                       responseSerialization:(PIRedditSerializationStrategy *)responseSerialization
+                                  completion:(void (^)(NSError *error, id responseObject, NSURLRequest *originalRequest))completion;
 
 /**
  Initializes and returns a newly allocated REST controller object with the specified URL session and base URL.

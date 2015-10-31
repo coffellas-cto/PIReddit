@@ -51,11 +51,13 @@
 }
 
 - (void)testOperation {
-    PIRedditRESTController *rest = [[PIRedditRESTController alloc] initWithSession:[NSURLSession sharedSession] baseURL:[NSURL URLWithString:@"https://google.com"]];
+    NSURL *URL = [NSURL URLWithString:@"https://google.com"];
+    PIRedditRESTController *rest = [[PIRedditRESTController alloc] initWithSession:[NSURLSession sharedSession] baseURL:URL];
     XCTestExpectation *exp = [self expectationWithDescription:@(__PRETTY_FUNCTION__)];
     PIRedditSerializationStrategy *strategy = [[PIRedditSerializationStrategy alloc] initWithStrategyType:PIRedditSerializationStrategyPlainText];
     strategy.plainTextEncoding = NSASCIIStringEncoding;
-    NSOperation *op = [rest requestOperationWithMethod:@"GET" atPath:@"" parameters:nil responseSerialization:strategy completion:^(NSError *error, id responseObject) {
+    NSOperation *op = [rest requestOperationWithMethod:@"GET" atPath:@"" parameters:nil responseSerialization:strategy completion:^(NSError *error, id responseObject, NSURLRequest *originalRequest) {
+        XCTAssertEqual(originalRequest.URL.host, URL.host);
         XCTAssertNil(error);
         XCTAssertNotNil(responseObject);
         XCTAssertTrue([responseObject isKindOfClass:[NSString class]]);
@@ -70,7 +72,7 @@
     PIRMockSession *mockSession = [PIRMockSession new];
     PIRedditRESTController *rest = [[PIRedditRESTController alloc] initWithSession:mockSession baseURL:[NSURL URLWithString:@"https://reddit.mock/mockapi/v1/"]];
     XCTestExpectation *exp = [self expectationWithDescription:@(__PRETTY_FUNCTION__)];
-    NSOperation *op = [rest requestOperationWithMethod:@"GET" atPath:@"me" parameters:@{@"showMockDummyResponse": @(YES)}  completion:^(NSError *error, id responseObject) {
+    NSOperation *op = [rest requestOperationWithMethod:@"GET" atPath:@"me" parameters:@{@"showMockDummyResponse": @(YES)}  completion:^(NSError *error, id responseObject, NSURLRequest *originalRequest) {
         XCTAssertNil(error);
         XCTAssertTrue([responseObject isKindOfClass:[NSDictionary class]]);
         XCTAssertTrue([GDDynamicCast(responseObject[@"mock"], NSString) isEqualToString:@"duck"]);
@@ -86,7 +88,7 @@
     PIRMockSession *mockSession = [PIRMockSession new];
     PIRedditRESTController *rest = [[PIRedditRESTController alloc] initWithSession:mockSession baseURL:[NSURL URLWithString:@"https://reddit.mock/mockapi/v1/"]];
     XCTestExpectation *exp = [self expectationWithDescription:@(__PRETTY_FUNCTION__)];
-    NSOperation *op = [rest requestOperationWithMethod:@"GET" atPath:@"me" parameters:@{@"showMockDummyResponse": @(NO)}  completion:^(NSError *error, id responseObject) {
+    NSOperation *op = [rest requestOperationWithMethod:@"GET" atPath:@"me" parameters:@{@"showMockDummyResponse": @(NO)}  completion:^(NSError *error, id responseObject, NSURLRequest *originalRequest) {
         XCTAssertNil(error);
         XCTAssertTrue([responseObject isKindOfClass:[NSDictionary class]]);
         XCTAssertTrue([GDDynamicCast(responseObject[@"mock"], NSString) isEqualToString:@"duck"]);
@@ -102,7 +104,7 @@
     PIRMockSession *mockSession = [PIRMockSession new];
     PIRedditRESTController *rest = [[PIRedditRESTController alloc] initWithSession:mockSession baseURL:[NSURL URLWithString:@"https://reddit.mock/mockapi/v1/"]];
     XCTestExpectation *exp = [self expectationWithDescription:@(__PRETTY_FUNCTION__)];
-    NSOperation *op = [rest requestOperationWithMethod:@"GET" atPath:@"no_such_path" parameters:@{@"showMockDummyResponse": @(NO)}  completion:^(NSError *error, id responseObject) {
+    NSOperation *op = [rest requestOperationWithMethod:@"GET" atPath:@"no_such_path" parameters:@{@"showMockDummyResponse": @(NO)}  completion:^(NSError *error, id responseObject, NSURLRequest *originalRequest) {
         XCTAssertNotNil(error);
         XCTAssertNil(responseObject);
         [exp fulfill];
@@ -116,7 +118,7 @@
     PIRMockSession *mockSession = [PIRMockSession new];
     PIRedditRESTController *rest = [[PIRedditRESTController alloc] initWithSession:mockSession baseURL:[NSURL URLWithString:@"https://reddit.mock/mockapi/v1/"]];
     XCTestExpectation *exp = [self expectationWithDescription:@(__PRETTY_FUNCTION__)];
-    NSOperation *op = [rest requestOperationWithMethod:@"POST" atPath:@"dummy" parameters:@{@"name": @"funny"}  completion:^(NSError *error, id responseObject) {
+    NSOperation *op = [rest requestOperationWithMethod:@"POST" atPath:@"dummy" parameters:@{@"name": @"funny"}  completion:^(NSError *error, id responseObject, NSURLRequest *originalRequest) {
         XCTAssertNil(error);
         XCTAssertTrue([responseObject isKindOfClass:[NSDictionary class]]);
         XCTAssertTrue([GDDynamicCast(responseObject[@"name"], NSString) isEqualToString:@"funny"]);
@@ -135,7 +137,7 @@
                              @11: @{@"11": @"12"},
                              @"array": @[@"long string it is", @1000, @"OK"],
                              @"dic": @{@"inside_me": @"smth"}};
-    NSOperation *op = [rest requestOperationWithMethod:@"POST" atPath:@"echo" parameters:params  completion:^(NSError *error, id responseObject) {
+    NSOperation *op = [rest requestOperationWithMethod:@"POST" atPath:@"echo" parameters:params  completion:^(NSError *error, id responseObject, NSURLRequest *originalRequest) {
         XCTAssertNil(error);
         XCTAssertTrue([responseObject isKindOfClass:[NSDictionary class]]);
         XCTAssertEqualObjects(GDDynamicCast(responseObject[@"test"], NSString), @"10");
@@ -150,7 +152,7 @@
     PIRMockSession *mockSession = [PIRMockSession new];
     PIRedditRESTController *rest = [[PIRedditRESTController alloc] initWithSession:mockSession baseURL:[NSURL URLWithString:@"https://reddit.mock/mockapi/v1/"]];
     XCTestExpectation *exp = [self expectationWithDescription:@(__PRETTY_FUNCTION__)];
-    NSOperation *op = [rest requestOperationWithMethod:@"PUT" atPath:@"dummy" parameters:@{@"name": @"funny"}  completion:^(NSError *error, id responseObject) {
+    NSOperation *op = [rest requestOperationWithMethod:@"PUT" atPath:@"dummy" parameters:@{@"name": @"funny"}  completion:^(NSError *error, id responseObject, NSURLRequest *originalRequest) {
         XCTAssertNil(error);
         XCTAssertTrue([responseObject isKindOfClass:[NSDictionary class]]);
         XCTAssertTrue([GDDynamicCast(responseObject[@"name"], NSString) isEqualToString:@"grummy"]);
