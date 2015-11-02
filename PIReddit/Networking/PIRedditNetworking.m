@@ -158,39 +158,46 @@ NSString * const kPIRHTTPMethodPOST = @"POST";
     if (error) {
         switch (error.code) {
             case 401:
-            {
-                dispatch_async(_tokenRefreshQueue, ^{
-                    NSString *oldToken = self.accessToken;
-                    [_tokenRefreshLock lock];
-                    if ([self.accessToken isEqualToString:oldToken]) {
-                        // Token is the same. Must reauthorize
-                        [self refreshTokenWithCompletion:^(NSError *tokenError, NSString *newToken) {
-                            dispatch_async(_tokenRefreshQueue, ^{
-                                [_tokenRefreshLock unlock];
-                                if (tokenError) {
-                                    dispatch_async(dispatch_get_main_queue(), ^{
-                                        completion(tokenError, nil);
-                                    });
-                                } else {
-                                    self.accessToken = newToken;
-                                    // TODO: resend request.
-                                    dispatch_async(dispatch_get_main_queue(), ^{
-                                        completion(nil, nil);
-                                    });
-                                }
-                            });
-                        }];
-                    } else {
-                        // Previous token refresh operation was a success.
-                        [_tokenRefreshLock unlock];
-                        // TODO: resend request.
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            completion(nil, nil);
-                        });
-                    }
-                });
-            }
-                return;
+                if (allowReauth) {
+                    __weak typeof(self) weakSelf = self;
+                    dispatch_block_t resendRequestBlock = ^{
+                        __weak typeof(weakSelf) strongSelf = weakSelf;
+                        NSOperation *op = [strongSelf.REST requestOperationWithRequest:originalRequest
+                                                                 responseSerialization:[[PIRedditSerializationStrategy alloc] initWithStrategyType:PIRedditSerializationStrategyJSON]
+                                                                            completion:^(NSError *resendError, id resendResponseObject, NSURLRequest *resendOriginalRequest)
+                                           {
+                                               [strongSelf processServerResponseError:resendError responseObject:resendResponseObject originalRequest:nil allowReauth:NO completion:completion];
+                                           }];
+                        [strongSelf.operationQueue addOperation:op];
+                    };
+                    
+                    dispatch_async(_tokenRefreshQueue, ^{
+                        NSString *oldToken = self.accessToken;
+                        [_tokenRefreshLock lock];
+                        if ([self.accessToken isEqualToString:oldToken]) {
+                            // Token is the same. Must reauthorize
+                            [self refreshTokenWithCompletion:^(NSError *tokenError, NSString *newToken) {
+                                dispatch_async(_tokenRefreshQueue, ^{
+                                    [_tokenRefreshLock unlock];
+                                    if (tokenError) {
+                                        dispatch_async(dispatch_get_main_queue(), ^{
+                                            completion(tokenError, nil);
+                                        });
+                                    } else {
+                                        self.accessToken = newToken;
+                                        resendRequestBlock();
+                                    }
+                                });
+                            }];
+                        } else {
+                            // Previous token refresh operation was a success.
+                            [_tokenRefreshLock unlock];
+                            resendRequestBlock();
+                        }
+                    });
+                    return;
+                }
+                // No break here.
                 
             default:
                 retValError = error;
