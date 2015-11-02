@@ -57,6 +57,18 @@
 @property (assign, readwrite, nonatomic) NSTimeInterval timeoutInterval;
 
 /**
+ Initializes and returns a newly allocated mutable URL request object for further use.
+ @param HTTPMethod HTTP request method.
+ @param path Path relative to `baseURL`. Should not be started with `/`.
+ @param parameters Dictionary which represents parameters for the request.
+ 
+ @return Newly allocated mutable URL request object.
+ */
+- (NSMutableURLRequest *)requestWithMethod:(NSString *)HTTPMethod
+                                    atPath:(NSString *)path
+                                parameters:(NSDictionary *)parameters;
+
+/**
  Initializes and returns a newly allocated asynchronous operation object which manages the request at the specified path.
  @param HTTPMethod HTTP request method.
  @param path Path relative to `baseURL`. Should not be started with `/`.

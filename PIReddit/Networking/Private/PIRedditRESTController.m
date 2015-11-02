@@ -62,21 +62,7 @@
 
 #pragma mark - Public Methods
 
-- (NSOperation *)requestOperationWithMethod:(NSString *)HTTPMethod
-                                     atPath:(NSString *)path
-                                 parameters:(NSDictionary *)parameters
-                                 completion:(void (^)(NSError *error, id responseObject, NSURLRequest *originalRequest))completion
-{
-    return [self requestOperationWithMethod:HTTPMethod atPath:path parameters:parameters responseSerialization:nil completion:completion];
-}
-
-
-- (NSOperation *)requestOperationWithMethod:(NSString *)HTTPMethod
-                                     atPath:(NSString *)path
-                                 parameters:(NSDictionary *)parameters
-                      responseSerialization:(PIRedditSerializationStrategy *)responseSerialization
-                                 completion:(void (^)(NSError *error, id responseObject, NSURLRequest *originalRequest))completion
-{
+- (NSMutableURLRequest *)requestWithMethod:(NSString *)HTTPMethod atPath:(NSString *)path parameters:(NSDictionary *)parameters {
     NSParameterAssert(HTTPMethod);
     NSAssert(!parameters || [parameters isKindOfClass:[NSDictionary class]], nil);
     NSString *paramsString = nil;
@@ -90,17 +76,12 @@
     
     BOOL encodeParamsInURIForMethod = NO;
     if (paramsString && (encodeParamsInURIForMethod = [self encodeParamsInURIForMethod:HTTPMethod])) {
-            path = [path stringByAppendingFormat:@"?%@", paramsString];
+        path = [path stringByAppendingFormat:@"?%@", paramsString];
     }
     
     NSURL *URL = [NSURL URLWithString:path relativeToURL:self.baseURL];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:URL cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:self.timeoutInterval];
     request.HTTPMethod = HTTPMethod;
-    [_headersLock lock];
-    for (id key in self.additionalHTTPHeaders) {
-        [request setValue:self.additionalHTTPHeaders[key] forHTTPHeaderField:key];
-    }
-    [_headersLock unlock];
     
     if (paramsString && !encodeParamsInURIForMethod) {
         // Encode params in body
@@ -112,14 +93,39 @@
         }
     }
     
-    return [self requestOperationWithRequest:[request copy] responseSerialization:responseSerialization completion:completion];
+    return request;
+}
+
+- (NSOperation *)requestOperationWithMethod:(NSString *)HTTPMethod
+                                     atPath:(NSString *)path
+                                 parameters:(NSDictionary *)parameters
+                                 completion:(void (^)(NSError *error, id responseObject, NSURLRequest *originalRequest))completion
+{
+    return [self requestOperationWithMethod:HTTPMethod atPath:path parameters:parameters responseSerialization:nil completion:completion];
+}
+
+- (NSOperation *)requestOperationWithMethod:(NSString *)HTTPMethod
+                                     atPath:(NSString *)path
+                                 parameters:(NSDictionary *)parameters
+                      responseSerialization:(PIRedditSerializationStrategy *)responseSerialization
+                                 completion:(void (^)(NSError *error, id responseObject, NSURLRequest *originalRequest))completion
+{
+    NSMutableURLRequest *request = [self requestWithMethod:HTTPMethod atPath:path parameters:parameters];
+    return [self requestOperationWithRequest:request responseSerialization:responseSerialization completion:completion];
 }
 
 - (NSOperation *)requestOperationWithRequest:(NSURLRequest *)urlRequest
                        responseSerialization:(PIRedditSerializationStrategy *)responseSerialization
                                   completion:(void (^)(NSError *error, id responseObject, NSURLRequest *originalRequest))completion
 {
-    PIRedditOperation *op = [PIRedditOperation operationWithRequest:urlRequest session:self.session completion:^(NSHTTPURLResponse *response, NSError *error, id responseObject) {
+    [_headersLock lock];
+    NSMutableURLRequest *finalRequest = (GDDynamicCast(urlRequest, NSMutableURLRequest)) ?: [urlRequest mutableCopy];
+    for (id key in self.additionalHTTPHeaders) {
+        [finalRequest setValue:self.additionalHTTPHeaders[key] forHTTPHeaderField:key];
+    }
+    [_headersLock unlock];
+    
+    PIRedditOperation *op = [PIRedditOperation operationWithRequest:finalRequest session:self.session completion:^(NSHTTPURLResponse *response, NSError *error, id responseObject) {
         if (completion) {
             if (!error) {
                 if (response.statusCode > 399 && response.statusCode <= 599) {
@@ -128,7 +134,7 @@
             }
             
             dispatch_async(dispatch_get_main_queue(), ^{
-                completion(error, responseObject, urlRequest);
+                completion(error, responseObject, finalRequest);
             });
         }
     }];

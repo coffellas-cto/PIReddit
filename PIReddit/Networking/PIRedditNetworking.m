@@ -29,17 +29,32 @@
 #import "PIRedditNetworking_Private.h"
 #import "PIRedditRESTController.h"
 #import "PIRedditSerializationStrategy.h"
+#import "PIRedditCommon.h"
 
 NSString * const kPIRHTTPMethodGET = @"GET";
 NSString * const kPIRHTTPMethodPOST = @"POST";
 
+#pragma mark - Categories
+
+@implementation NSDictionary (PIRedditNetworking)
+
++ (NSDictionary *)pireddit_basicAuthDictionaryWithUser:(NSString *)user {
+    NSData *authData = [[NSString stringWithFormat:@"%@:", user] dataUsingEncoding:NSASCIIStringEncoding];
+    NSString *authValue = [NSString stringWithFormat:@"Basic %@", [[NSString alloc] initWithData:[authData base64EncodedDataWithOptions:0] encoding:NSUTF8StringEncoding]];
+    return @{@"Authorization": authValue};
+}
+
+@end
+
+#pragma mark - PIRedditNetworking
+
 @interface PIRedditNetworking () {
     NSLock *_tokenRefreshLock;
-    dispatch_queue_t _tokenRefreshQueue;
 }
 
 @property (readonly, nonatomic) PIRedditRESTController *REST;
 @property (readonly, nonatomic) NSDictionary *additionalHTTPHeaders;
+@property (readwrite, copy, atomic) NSString *refreshToken;
 
 @end
 
@@ -171,18 +186,18 @@ NSString * const kPIRHTTPMethodPOST = @"POST";
                         [strongSelf.operationQueue addOperation:op];
                     };
                     
-                    dispatch_async(_tokenRefreshQueue, ^{
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        XLog(@"[1] %@", [NSThread currentThread]);
                         NSString *oldToken = self.accessToken;
                         [_tokenRefreshLock lock];
                         if ([self.accessToken isEqualToString:oldToken]) {
                             // Token is the same. Must reauthorize
                             [self refreshTokenWithCompletion:^(NSError *tokenError, NSString *newToken) {
-                                dispatch_async(_tokenRefreshQueue, ^{
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    XLog(@"[2] %@", [NSThread currentThread]);
                                     [_tokenRefreshLock unlock];
                                     if (tokenError) {
-                                        dispatch_async(dispatch_get_main_queue(), ^{
-                                            completion(tokenError, nil);
-                                        });
+                                        completion(tokenError, nil);
                                     } else {
                                         self.accessToken = newToken;
                                         resendRequestBlock();
@@ -214,10 +229,46 @@ NSString * const kPIRHTTPMethodPOST = @"POST";
 #pragma mark - Token
 
 - (void)refreshTokenWithCompletion:(void(^)(NSError *error, NSString *newToken))completion {
-    // TODO:
-    if (completion) {
-        completion(nil, @"");
+    if (!self.clientName.length) {
+        // TODO: error
+        NSError *error = [NSError errorWithDomain:PIRedditErrorDomain code:-1000 userInfo:nil];
+        if (completion) {
+            completion(error, nil);
+        }
+        return;
     }
+    
+    PIRedditRESTController *REST = [[PIRedditRESTController alloc] initWithSession:[NSURLSession sharedSession] baseURL:[NSURL URLWithString:@"https://www.reddit.com/api/v1/"]];
+
+    REST.additionalHTTPHeaders = [NSDictionary pireddit_basicAuthDictionaryWithUser:self.clientName];
+    NSOperation *op = [REST requestOperationWithMethod:kPIRHTTPMethodPOST
+                                                atPath:@"access_token"
+                                            parameters:@{@"grant_type": @"refresh_token",
+                                                         // TODO: real refresh token here
+                                                         @"refresh_token": self.refreshToken ?: @"45906542-yBkmMHPRtH5fXkz8nm43s2pvsSM"}
+                                            completion:^(NSError *opError, id responseObject, NSURLRequest *originalRequest)
+    {
+        NSString *newToken;
+        if (!opError) {
+            NSDictionary *responseDic = GDDynamicCast(responseObject, NSDictionary);
+            if (responseDic) {
+                XLog(@"%@", responseDic);
+                newToken = responseDic[@"access_token"];
+                if (!newToken) {
+                    // TODO: error
+                    opError = [NSError errorWithDomain:PIRedditErrorDomain code:-1000 userInfo:@{NSLocalizedDescriptionKey: responseDic[@"error"] ?: @"Unknown error"}];
+                }
+            } else {
+                // TODO: error
+                opError = [NSError errorWithDomain:PIRedditErrorDomain code:-1000 userInfo:nil];
+            }
+        }
+        
+        if (completion) {
+            completion(opError, newToken);
+        }
+    }];
+    [self.operationQueue addOperation:op];
 }
 
 #pragma mark - KVO
@@ -244,7 +295,6 @@ NSString * const kPIRHTTPMethodPOST = @"POST";
         [self addObserver:self forKeyPath:NSStringFromSelector(@selector(accessToken)) options:NSKeyValueObservingOptionNew context:NULL];
         [self addObserver:self forKeyPath:NSStringFromSelector(@selector(userAgent)) options:NSKeyValueObservingOptionNew context:NULL];
         _tokenRefreshLock = [NSLock new];
-        _tokenRefreshQueue = dispatch_queue_create("reddit_token_refresh", 0);
     }
     return self;
 }

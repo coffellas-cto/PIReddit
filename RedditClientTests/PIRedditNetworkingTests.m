@@ -45,7 +45,7 @@
     [self setupNetworkingWithUserAgent:@"RedditClientTestiOS"
                            redirectURI:@"testredditclient://apiredirect"
                             clientName:@"nhFJDb_f9RYThw"
-                           accessToken:@"45906542-5-78a6w0jrIO6ZcMjCS2jZTla3g"
+                           accessToken:@"45906542-4SEAI3f6JfQ2fKQtZB-bQf2mC0I"
                          encryptionKey:@"q-nv2-tnt-v3t-q53-qt474-t"];
 }
 
@@ -87,7 +87,7 @@
 - (void)testSearch {
     [self properSetup];
     XCTestExpectation *exp = [self expectationWithDescription:@(__PRETTY_FUNCTION__)];
-    [networking searchFor:@"games" limit:0 completion:^(NSError *error, id responseObject) {
+    [networking searchFor:@"games" limit:1 completion:^(NSError *error, id responseObject) {
         XCTAssertNil(error);
         XCTAssertNotNil(responseObject);
         [exp fulfill];
