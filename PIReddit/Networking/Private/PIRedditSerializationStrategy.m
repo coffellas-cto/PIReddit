@@ -37,7 +37,13 @@
     id retVal = nil;
     switch (self.strategyType) {
         case PIRedditSerializationStrategyJSON:
+        {
+            if (data) {
+                NSString *JSONString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                XLog(@"%@", JSONString);
+            }
             retVal = [NSJSONSerialization JSONObjectWithData:data options:0 error:error];
+        }
             break;
         case PIRedditSerializationStrategyPlainText:
             retVal = [[NSString alloc] initWithData:data encoding:self.plainTextEncoding];

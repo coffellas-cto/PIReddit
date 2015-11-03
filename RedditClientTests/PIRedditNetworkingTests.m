@@ -87,7 +87,7 @@
 - (void)testSearch {
     [self properSetup];
     XCTestExpectation *exp = [self expectationWithDescription:@(__PRETTY_FUNCTION__)];
-    [networking searchFor:@"games" limit:1 completion:^(NSError *error, id responseObject) {
+    [networking searchFor:@"games" limit:2 completion:^(NSError *error, id responseObject) {
         XCTAssertNil(error);
         XCTAssertNotNil(responseObject);
         [exp fulfill];
