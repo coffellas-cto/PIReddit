@@ -27,6 +27,7 @@
  */
 
 #import "PIRedditSerializationStrategy.h"
+#import "PIRedditCommon.h"
 
 @implementation PIRedditSerializationStrategy
 
