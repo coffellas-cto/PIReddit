@@ -30,6 +30,7 @@
 #import "PIRedditRESTController.h"
 #import "PIRedditSerializationStrategy.h"
 #import "PIRedditCommon.h"
+#import "PIRedditListing.h"
 
 NSString * const kPIRHTTPMethodGET = @"GET";
 NSString * const kPIRHTTPMethodPOST = @"POST";
@@ -109,18 +110,44 @@ NSString * const kPIRHTTPMethodPOST = @"POST";
 
 #pragma mark - Public Methods
 
-- (NSOperation *)searchFor:(NSString *)searchTerm limit:(NSUInteger)limit completion:(PIRedditNetworkingCompletion)completion {
+- (NSOperation *)searchFor:(NSString *)searchTerm limit:(NSUInteger)limit completion:(void(^)(NSError *error, PIRedditListing *listing))completion {
     NSParameterAssert(searchTerm);
+    if (searchTerm.length > 512) {
+        searchTerm = [searchTerm substringToIndex:512];
+    }
+    
     NSMutableDictionary *params = [NSMutableDictionary new];
     params[@"q"] = searchTerm;
     if (limit) {
         params[@"limit"] = @(limit);
     }
     
-    return [self requestOperationAtPath:@"search" parameters:[params copy] completion:completion];
+    __weak typeof(self) weakSelf = self;
+    return [self requestOperationAtPath:@"search" parameters:[params copy] completion:^(NSError *error, id responseObject) {
+        [weakSelf parseListingWithError:error responseObject:responseObject completion:completion];
+    }];
 }
 
 #pragma mark - Private Methods
+
+- (void)parseListingWithError:(NSError *)error responseObject:(id)responseObject completion:(void (^)(NSError *, PIRedditListing *))completion {
+    if (!error) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            NSError *parseError;
+            PIRedditListing *listing = [[PIRedditListing alloc] initWithDictionary:responseObject];
+            if (!listing) {
+                // TODO: Error
+                parseError = [NSError errorWithDomain:PIRedditErrorDomain code:-1000 userInfo:nil];
+            }
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion(parseError, listing);
+            });
+        });
+    } else {
+        completion(error, nil);
+    }
+}
 
 - (NSOperation *)requestOperationAtPath:(NSString *)path
                              parameters:(NSDictionary *)parameters
@@ -142,6 +169,7 @@ NSString * const kPIRHTTPMethodPOST = @"POST";
                                 allowReauth:(BOOL)allowReauth
                                  completion:(void (^)(NSError *error, id responseObject))completion
 {
+    __weak typeof(self) weakSelf = self;
     NSOperation *retVal = [self.REST requestOperationWithMethod:HTTPMethod
                                                          atPath:path
                                                      parameters:parameters
@@ -150,7 +178,7 @@ NSString * const kPIRHTTPMethodPOST = @"POST";
                            ^(NSError *error, id responseObject, NSURLRequest *originalRequest)
     {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [self processServerResponseError:error responseObject:responseObject originalRequest:originalRequest allowReauth:allowReauth completion:completion];
+            [weakSelf processServerResponseError:error responseObject:responseObject originalRequest:originalRequest allowReauth:allowReauth completion:completion];
         });
     } : nil];
     
@@ -219,6 +247,7 @@ NSString * const kPIRHTTPMethodPOST = @"POST";
                 break;
         }
     } else {
+        retValObject = responseObject;
     }
     
     dispatch_async(dispatch_get_main_queue(), ^{

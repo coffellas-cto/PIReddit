@@ -30,6 +30,8 @@
 
 typedef void(^PIRedditNetworkingCompletion)(NSError *error, id responseObject);
 
+@class PIRedditListing;
+
 /**
  Class that sends requests to Reddit API.
  @attention If you don't set the `encryptionKey` property, no encryption will be used for locally saved token.
@@ -83,8 +85,8 @@ typedef void(^PIRedditNetworkingCompletion)(NSError *error, id responseObject);
  @return Operation object.
  */
 - (NSOperation *)searchFor:(NSString *)searchTerm
-            limit:(NSUInteger)limit
-       completion:(PIRedditNetworkingCompletion)completion;
+                     limit:(NSUInteger)limit
+                completion:(void(^)(NSError *error, PIRedditListing *listing))completion;
 
 /**
  Singleton accessor.

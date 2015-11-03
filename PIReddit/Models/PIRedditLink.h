@@ -8,6 +8,8 @@
 
 #import "PIRedditKind.h"
 
+// TODO: Implement.
+
 /**
  Class which represents Reddit "link kind".
  */

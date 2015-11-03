@@ -8,6 +8,7 @@
 
 #import <XCTest/XCTest.h>
 #import "PIRedditNetworking_Private.h"
+#import "PIRedditListing.h"
 
 @interface PIRedditNetworkingTests : XCTestCase
 
@@ -87,7 +88,7 @@
 - (void)testSearch {
     [self properSetup];
     XCTestExpectation *exp = [self expectationWithDescription:@(__PRETTY_FUNCTION__)];
-    [networking searchFor:@"games" limit:2 completion:^(NSError *error, id responseObject) {
+    [networking searchFor:@"games" limit:2 completion:^(NSError *error, PIRedditListing *responseObject) {
         XCTAssertNil(error);
         XCTAssertNotNil(responseObject);
         [exp fulfill];
