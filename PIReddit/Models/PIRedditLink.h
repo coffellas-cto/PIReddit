@@ -28,11 +28,46 @@
 
 #import "PIRedditKind.h"
 
-// TODO: Implement.
-
 /**
  Class which represents Reddit "link kind".
  */
 @interface PIRedditLink : PIRedditKind
+
+/**
+ Subreddit the link belongs to.
+ */
+@property (readonly, copy, nonatomic) NSString *subreddit;
+/**
+ Link post's full text.
+ */
+@property (readonly, copy, nonatomic) NSString *text;
+/**
+ Link unique identifier.
+ */
+@property (readonly, copy, nonatomic) NSString *ID;
+/**
+ Link's author.
+ */
+@property (readonly, copy, nonatomic) NSString *author;
+/**
+ ID of a subreddit the link belongs to.
+ */
+@property (readonly, copy, nonatomic) NSString *subredditID;
+/**
+ Permalink of a link.
+ */
+@property (readonly, copy, nonatomic) NSString *permalink;
+/**
+ String that represents link's URL.
+ */
+@property (readonly, copy, nonatomic) NSString *url;
+/**
+ Links title.
+ */
+@property (readonly, copy, nonatomic) NSString *title;
+/**
+ A date the link was created in UTC.
+ */
+@property (readonly, copy, nonatomic) NSDate *createdUTC;
 
 @end

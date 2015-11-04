@@ -63,7 +63,7 @@
                                 for (id child in children) {
                                     NSDictionary *childDic = GDDynamicCast(child, NSDictionary);
                                     if (childDic) {
-                                        PIRedditKind *kindChild = [[PIRedditKind alloc] initWithDictionary:childDic];
+                                        PIRedditKind *kindChild = [PIRedditKind redditKindWithDictionary:childDic];
                                         if (kindChild) {
                                             [mutableKindChildren addObject:kindChild];
                                         }

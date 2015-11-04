@@ -33,4 +33,16 @@
  */
 @interface PIRedditKind : PIRedditModel
 
+/**
+ All fields of a kind for your convenience.
+ */
+@property (readonly, strong, nonatomic) NSDictionary *allFields;
+
+/**
+ Factory method for creating `PIRedditKind` subclasses from provided dictionary.
+ @param dictionary Dictionary to initialize an object with. Cannot be `nil`.
+ @return A newly initialized model object of `PIRedditKind` subclass or `nil` if malformed dictionary is provided.
+ */
++ (instancetype)redditKindWithDictionary:(NSDictionary *)dictionary;
+
 @end

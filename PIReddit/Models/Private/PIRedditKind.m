@@ -30,6 +30,10 @@
 #import "PIRedditCommon.h"
 #import "PIRedditLink.h"
 
+@interface PIRedditKind ()
+@property (readwrite, strong, nonatomic) NSDictionary *allFields;
+@end
+
 @implementation PIRedditKind
 
 + (Class)classForKind:(NSString *)kind {
@@ -42,10 +46,14 @@
 
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary {
     self = [super initWithDictionary:dictionary];
-    if (!self) {
-        return nil;
+    if (self) {
+        _allFields = dictionary;
     }
     
+    return self;
+}
+
++ (instancetype)redditKindWithDictionary:(NSDictionary *)dictionary {
     NSString *kind = GDDynamicCast(dictionary[@"kind"], NSString);
     if (kind) {
         Class class = [[self class] classForKind:kind];
@@ -55,6 +63,10 @@
     }
     
     return nil;
+}
+
+- (NSString *)description {
+    return [self.allFields description];
 }
 
 @end

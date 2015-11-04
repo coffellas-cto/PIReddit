@@ -32,7 +32,23 @@
 @implementation PIRedditLink
 
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary {
-    return [self init];
+    self = [super initWithDictionary:dictionary];
+    if (self) {
+        _subreddit = GDDynamicCast(dictionary[@"subreddit"], NSString);
+        _text = GDDynamicCast(dictionary[@"selftext"], NSString);
+        _ID = GDDynamicCast(dictionary[@"id"], NSString);
+        _author = GDDynamicCast(dictionary[@"author"], NSString);
+        _subredditID = GDDynamicCast(dictionary[@"subreddit_id"], NSString);
+        _permalink = GDDynamicCast(dictionary[@"permalink"], NSString);
+        _url = GDDynamicCast(dictionary[@"url"], NSString);
+        _title = GDDynamicCast(dictionary[@"title"], NSString);
+        NSTimeInterval createdTimeinterval = [GDDynamicCast(dictionary[@"created_utc"], NSNumber) doubleValue];
+        if (createdTimeinterval) {
+            _createdUTC = [NSDate dateWithTimeIntervalSince1970:createdTimeinterval];
+        }
+    }
+    
+    return self;
 }
 
 @end
