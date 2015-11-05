@@ -129,11 +129,11 @@
 #ifdef DEBUG
         u_int32_t req_id = arc4random_uniform(-1);
 #endif
-        XLog(@"Send request [%x]: %@ %@", req_id, self.request, self.request.allHTTPHeaderFields);
+        XLog(@"Send request [0x%.8x]: %@ %@", req_id, self.request, self.request.allHTTPHeaderFields);
         self.task = [self.session dataTaskWithRequest:self.request
                                     completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error)
                      {
-                         XLog(@"Response [%x]: %@", req_id, response);
+                         XLog(@"Response [0x%.8x]: %@", req_id, response);
                          __strong typeof (weakSelf) strongSelf = weakSelf;
                          [strongSelf callCompletionWithResponse:response error:error data:data];
                      }];
