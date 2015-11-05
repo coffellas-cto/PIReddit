@@ -45,6 +45,10 @@
 }
 
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary {
+    if (dictionary.count == 0) {
+        return nil;
+    }
+    
     self = [super initWithDictionary:dictionary];
     if (self) {
         _allFields = dictionary;
