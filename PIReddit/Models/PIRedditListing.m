@@ -49,9 +49,11 @@
         if ([GDDynamicCast(dictionary[@"kind"], NSString) isEqualToString:@"Listing"]) {
             NSDictionary *dataDictionary = GDDynamicCast(dictionary[@"data"], NSDictionary);
             if (dataDictionary) {
-                _beforeID = GDDynamicCast(dataDictionary[@"before"], NSString);
-                _afterID = GDDynamicCast(dataDictionary[@"after"], NSString);
-                if (_beforeID || _afterID) {
+                id before = dataDictionary[@"before"];
+                id after = dataDictionary[@"after"];
+                if (before || after) {
+                    _beforeID = GDDynamicCast(before, NSString);
+                    _afterID = GDDynamicCast(after, NSString);
                     valid = YES;
                     NSArray *children = dataDictionary[@"children"];
                     if (children) {

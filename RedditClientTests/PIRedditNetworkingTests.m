@@ -28,6 +28,14 @@
     [super tearDown];
 }
 
+- (void)testSingleton {
+    PIRedditNetworking *networking1 = [PIRedditNetworking sharedInstance];
+    XCTAssertNotNil(networking1);
+    PIRedditNetworking *networking2 = [PIRedditNetworking sharedInstance];
+    XCTAssertNotNil(networking2);
+    XCTAssertEqual(networking1, networking2);
+}
+
 - (void)setupNetworkingWithUserAgent:(NSString *)userAgent
                          redirectURI:(NSString *)redirectURI
                           clientName:(NSString *)clientName
@@ -91,6 +99,26 @@
     [networking searchFor:@"games" limit:2 completion:^(NSError *error, PIRedditListing *responseObject) {
         XCTAssertNil(error);
         XCTAssertNotNil(responseObject);
+        [exp fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:1000 handler:nil];
+}
+
+- (void)testInadequateSearch {
+    [self properSetup];
+    XCTestExpectation *exp = [self expectationWithDescription:@(__PRETTY_FUNCTION__)];
+    char long_random_str[514] = {0};
+    for (int i = 0; i < 513; i++) {
+        long_random_str[i] = arc4random_uniform(50) + 40;
+    }
+    
+    XCTAssertEqual(strlen(long_random_str), 513);
+    NSString *longString = [[NSString alloc] initWithCString:long_random_str encoding:NSASCIIStringEncoding];
+    [networking searchFor:longString limit:2 completion:^(NSError *error, PIRedditListing *responseObject) {
+        XCTAssertNil(error);
+        XCTAssertNotNil(responseObject);
+        XCTAssertEqual(responseObject.children.count, 0);
         [exp fulfill];
     }];
     
