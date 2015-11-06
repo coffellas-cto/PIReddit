@@ -34,6 +34,11 @@
 @interface PIRedditLink : PIRedditKind
 
 /**
+ Reddit fullname string.
+ */
+@property (readonly, copy, nonatomic) NSString *fullName;
+
+/**
  Subreddit the link belongs to.
  */
 @property (readonly, copy, nonatomic) NSString *subreddit;

@@ -31,3 +31,15 @@
 
 extern NSString * const PIRedditURLErrorDomain;
 extern NSString * const PIRedditErrorDomain;
+
+typedef NS_ENUM(NSUInteger, PIRedditTime) {
+    PIRedditTimeNone,
+    PIRedditTimeHour,
+    PIRedditTimeDay,
+    PIRedditTimeWeek,
+    PIRedditTimeMonth,
+    PIRedditTimeYear,
+    PIRedditTimeAll
+};
+
+extern NSString *PIRedditStringFromTime(PIRedditTime time);

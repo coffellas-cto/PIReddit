@@ -31,3 +31,23 @@
 
 NSString * const PIRedditURLErrorDomain = @"PIRedditURLErrorDomain";
 NSString * const PIRedditErrorDomain = @"PIRedditErrorDomain";
+
+extern NSString *PIRedditStringFromTime(PIRedditTime time) {
+    switch (time) {
+        case PIRedditTimeHour:
+            return @"hour";
+        case PIRedditTimeDay:
+            return @"day";
+        case PIRedditTimeWeek:
+            return @"week";
+        case PIRedditTimeMonth:
+            return @"month";
+        case PIRedditTimeYear:
+            return @"year";
+        case PIRedditTimeAll:
+            return @"all";
+            
+        default:
+            return nil;
+    }
+}

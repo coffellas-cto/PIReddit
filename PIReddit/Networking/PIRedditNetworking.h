@@ -27,6 +27,7 @@
  */
 
 #import <Foundation/Foundation.h>
+#import "PIRedditConstants.h"
 
 typedef void(^PIRedditNetworkingCompletion)(NSError *error, id responseObject);
 
@@ -74,18 +75,39 @@ typedef void(^PIRedditNetworkingCompletion)(NSError *error, id responseObject);
  */
 - (BOOL)processRedirectURL:(NSURL *)redirectURL error:(NSError *__autoreleasing *)error;
 
-// TODO:
-// https://www.reddit.com/dev/api/oauth#GET_search
-
 /**
  Search links page on Reddit.
- @param searchTerm A string to search for (512 characters maximum).
+ @param searchTerm A string to search for (512 characters maximum). Cannot be `nil`.
  @param limit The maximum number of items desired (default: 25, maximum: 100).
  @param completion Block to be called after response is received.
  @return Operation object.
  */
 - (NSOperation *)searchFor:(NSString *)searchTerm
                      limit:(NSUInteger)limit
+                completion:(void(^)(NSError *error, PIRedditListing *listing))completion;
+
+// TODO:
+// https://www.reddit.com/dev/api/oauth#GET_search
+
+/**
+ Search links page on Reddit.
+ @param searchTerm A string to search for (512 characters maximum). Cannot be `nil`.
+ @param limit The maximum number of items desired (default: 25, maximum: 100).
+ @param fullNameBefore Previous link's fullname string.
+ @param fullNameAfter Next link's fullname string.
+ @param subreddit A subreddit to search on. Can be `nil`.
+ @param time Creation time limit. one of `PIRedditTime` enum values. Can be 0.
+ @param otherParams Dictionary of parameters as described at https://www.reddit.com/dev/api/oauth#GET_search. Can be `nil`.
+ @param completion Block to be called after response is received.
+ @return Operation object.
+ */
+- (NSOperation *)searchFor:(NSString *)searchTerm
+                     limit:(NSUInteger)limit
+            fullNameBefore:(NSString *)fullNameBefore
+             fullNameAfter:(NSString *)fullNameAfter
+                 subreddit:(NSString *)subreddit
+                      time:(PIRedditTime)time
+               otherParams:(NSDictionary *)otherParams
                 completion:(void(^)(NSError *error, PIRedditListing *listing))completion;
 
 /**

@@ -52,8 +52,8 @@
                 id before = dataDictionary[@"before"];
                 id after = dataDictionary[@"after"];
                 if (before || after) {
-                    _beforeID = GDDynamicCast(before, NSString);
-                    _afterID = GDDynamicCast(after, NSString);
+                    _fullNameBefore = GDDynamicCast(before, NSString);
+                    _fullNameAfter = GDDynamicCast(after, NSString);
                     valid = YES;
                     NSArray *children = dataDictionary[@"children"];
                     if (children) {

@@ -39,6 +39,11 @@
 @property (readonly, strong, nonatomic) NSDictionary *allFields;
 
 /**
+ Reddit kind string. To be overriden by children.
+ */
+@property (readonly, copy, nonatomic) NSString *kind;
+
+/**
  Factory method for creating `PIRedditKind` subclasses from provided dictionary.
  @param dictionary Dictionary to initialize an object with. Cannot be `nil`.
  @return A newly initialized model object of `PIRedditKind` subclass or `nil` if malformed dictionary is provided.

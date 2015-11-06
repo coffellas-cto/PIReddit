@@ -110,7 +110,21 @@ NSString * const kPIRHTTPMethodPOST = @"POST";
 
 #pragma mark - Public Methods
 
-- (NSOperation *)searchFor:(NSString *)searchTerm limit:(NSUInteger)limit completion:(void(^)(NSError *error, PIRedditListing *listing))completion {
+- (NSOperation *)searchFor:(NSString *)searchTerm
+                     limit:(NSUInteger)limit
+                completion:(void(^)(NSError *error, PIRedditListing *listing))completion {
+    return [self searchFor:searchTerm limit:limit fullNameBefore:nil fullNameAfter:nil subreddit:nil time:0 otherParams:nil completion:completion];
+}
+
+- (NSOperation *)searchFor:(NSString *)searchTerm
+                     limit:(NSUInteger)limit
+            fullNameBefore:(NSString *)fullNameBefore
+             fullNameAfter:(NSString *)fullNameAfter
+                 subreddit:(NSString *)subreddit
+                      time:(PIRedditTime)time
+               otherParams:(NSDictionary *)otherParams
+                completion:(void(^)(NSError *error, PIRedditListing *listing))completion
+{
     NSParameterAssert(searchTerm);
     if (searchTerm.length > 512) {
         searchTerm = [searchTerm substringToIndex:512];
@@ -118,12 +132,14 @@ NSString * const kPIRHTTPMethodPOST = @"POST";
     
     NSMutableDictionary *params = [NSMutableDictionary new];
     params[@"q"] = searchTerm;
-    if (limit) {
-        params[@"limit"] = @(limit);
-    }
+    if (limit) { params[@"limit"] = @(limit); }
+    if (time != 0) { params[@"t"] = PIRedditStringFromTime(time); }
+    if (fullNameBefore) { params[@"before"] = fullNameBefore; }
+    if (fullNameAfter) { params[@"after"] = fullNameAfter; }
     
+    NSString *path = subreddit ? [NSString stringWithFormat:@"r/%@/search", subreddit] : @"search";
     __weak typeof(self) weakSelf = self;
-    return [self requestOperationAtPath:@"search" parameters:[params copy] completion:^(NSError *error, id responseObject) {
+    return [self requestOperationAtPath:path parameters:[params copy] completion:^(NSError *error, id responseObject) {
         [weakSelf parseListingWithError:error responseObject:responseObject completion:completion];
     }];
 }

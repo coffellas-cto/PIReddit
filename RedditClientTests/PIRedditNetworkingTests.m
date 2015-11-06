@@ -9,6 +9,7 @@
 #import <XCTest/XCTest.h>
 #import "PIRedditNetworking_Private.h"
 #import "PIRedditListing.h"
+#import "PIRedditLink.h"
 
 @interface PIRedditNetworkingTests : XCTestCase
 
@@ -99,6 +100,7 @@
     [networking searchFor:@"games" limit:2 completion:^(NSError *error, PIRedditListing *responseObject) {
         XCTAssertNil(error);
         XCTAssertNotNil(responseObject);
+        XCTAssertEqual(responseObject.children.count, 2);
         [exp fulfill];
     }];
     
@@ -120,6 +122,29 @@
         XCTAssertNotNil(responseObject);
         XCTAssertEqual(responseObject.children.count, 0);
         [exp fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:1000 handler:nil];
+}
+
+- (void)testSubredditSearch {
+    [self properSetup];
+    XCTestExpectation *exp = [self expectationWithDescription:@(__PRETTY_FUNCTION__)];
+    [networking searchFor:@"lineage" limit:2 fullNameBefore:nil fullNameAfter:nil subreddit:@"games" time:PIRedditTimeAll otherParams:nil completion:^(NSError *error, PIRedditListing *listing) {
+        XCTAssertNil(error);
+        XCTAssertNotNil(listing);
+        XCTAssertEqual(listing.children.count, 2);
+        PIRedditLink *fakeAfter = (PIRedditLink *)listing.children[0];
+        PIRedditLink *lastLink = (PIRedditLink *)listing.children[1];
+        XCTAssertEqualObjects(listing.fullNameAfter, lastLink.fullName);
+        [networking searchFor:@"lineage" limit:2 fullNameBefore:nil fullNameAfter:fakeAfter.fullName subreddit:@"games" time:PIRedditTimeAll otherParams:nil completion:^(NSError *error, PIRedditListing *listing2) {
+            XCTAssertNil(error);
+            XCTAssertNotNil(listing2);
+            XCTAssertEqual(listing2.children.count, 2);
+            XCTAssertTrue([lastLink.fullName isEqualToString:((PIRedditLink *)listing2.children[0]).fullName]);
+            XCTAssertFalse([lastLink.fullName isEqualToString:((PIRedditLink *)listing2.children[1]).fullName]);
+            [exp fulfill];
+        }];
     }];
     
     [self waitForExpectationsWithTimeout:1000 handler:nil];

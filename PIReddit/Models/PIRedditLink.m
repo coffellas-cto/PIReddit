@@ -31,6 +31,14 @@
 
 @implementation PIRedditLink
 
+- (NSString *)fullName {
+    return self.ID ? [NSString stringWithFormat:@"%@_%@", self.kind, self.ID] : nil;
+}
+
+- (NSString *)kind {
+    return @"t3";
+}
+
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary {
     self = [super initWithDictionary:dictionary];
     if (self) {

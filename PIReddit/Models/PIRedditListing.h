@@ -37,14 +37,14 @@
 @interface PIRedditListing : PIRedditModel
 
 /**
- ID of a listing before current.
+ Fullname of a listing before current.
  */
-@property (readonly, copy, nonatomic) NSString *beforeID;
+@property (readonly, copy, nonatomic) NSString *fullNameBefore;
 
 /**
- ID of a listing after current.
+ Fullname of a listing after current.
  */
-@property (readonly, copy, nonatomic) NSString *afterID;
+@property (readonly, copy, nonatomic) NSString *fullNameAfter;
 
 /**
  Array containing children of generic type. Returns empty array if no children are present.
