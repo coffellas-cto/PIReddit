@@ -29,17 +29,23 @@
 #import "PIRedditKind.h"
 #import "PIRedditCommon.h"
 #import "PIRedditLink.h"
-
-@interface PIRedditKind ()
-@property (readwrite, strong, nonatomic) NSDictionary *allFields;
-@end
+#import "PIRedditComment.h"
 
 @implementation PIRedditKind
 
+- (NSString *)fullName {
+    return self.ID ? [NSString stringWithFormat:@"%@_%@", self.kind, self.ID] : nil;
+}
+
 + (Class)classForKind:(NSString *)kind {
-    if ([kind isEqualToString:@"t3"]) {
+    if ([kind isEqualToString:kPIRedditKindValueComment]) {
         return [PIRedditLink class];
     }
+    
+    if ([kind isEqualToString:kPIRedditKindValueLink]) {
+        return [PIRedditLink class];
+    }
+    
     // TODO: Implement.
     return [self class];
 }
@@ -51,6 +57,7 @@
     
     self = [super initWithDictionary:dictionary];
     if (self) {
+        _ID = GDDynamicCast(dictionary[@"id"], NSString);
         _allFields = dictionary;
     }
     

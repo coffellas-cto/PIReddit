@@ -111,6 +111,19 @@ typedef void(^PIRedditNetworkingCompletion)(NSError *error, id responseObject);
                 completion:(void(^)(NSError *error, PIRedditListing *listing))completion;
 
 /**
+ Get the comment tree for a given Link article.
+ @param linkID ID36 of a link.
+ @param depth The maximum depth of subtrees in the thread.
+ @param limit The maximum number of comments to return.
+ @param completion Block to be called after response is received.
+ @return Operation object.
+ */
+- (NSOperation *)commentsForLink:(NSString *)linkID
+                           depth:(NSUInteger)depth
+                           limit:(NSUInteger)limit
+                      completion:(void(^)(NSError *error, id object))completion;
+
+/**
  Singleton accessor.
  @return Static `PIRedditNetworking` singleton instance.
  */

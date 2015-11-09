@@ -149,6 +149,18 @@ NSString * const kPIRHTTPMethodPOST = @"POST";
     }];
 }
 
+- (NSOperation *)commentsForLink:(NSString *)linkID
+                           depth:(NSUInteger)depth
+                           limit:(NSUInteger)limit
+                      completion:(void(^)(NSError *error, id object))completion {
+    NSParameterAssert(linkID);
+    NSMutableDictionary *params = [NSMutableDictionary new];
+    params[@"article"] = linkID;
+    if (limit) { params[@"limit"] = @(limit); }
+    if (depth) { params[@"depth"] = @(depth); }
+    return [self requestOperationAtPath:@"comments/article" parameters:@{@"article": linkID} completion:completion];
+}
+
 #pragma mark - Private Methods
 
 - (void)parseListingWithError:(NSError *)error responseObject:(id)responseObject completion:(void (^)(NSError *, PIRedditListing *))completion {

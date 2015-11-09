@@ -34,6 +34,16 @@
 @interface PIRedditKind : PIRedditModel
 
 /**
+ Reddit fullname string.
+ */
+@property (readonly, copy, nonatomic) NSString *fullName;
+
+/**
+ Kind's unique identifier.
+ */
+@property (readonly, copy, nonatomic) NSString *ID;
+
+/**
  All fields of a kind for your convenience.
  */
 @property (readonly, strong, nonatomic) NSDictionary *allFields;

@@ -29,14 +29,12 @@
 #import "PIRedditLink.h"
 #import "PIRedditCommon.h"
 
+NSString * const kPIRedditKindValueLink = @"t3";
+
 @implementation PIRedditLink
 
-- (NSString *)fullName {
-    return self.ID ? [NSString stringWithFormat:@"%@_%@", self.kind, self.ID] : nil;
-}
-
 - (NSString *)kind {
-    return @"t3";
+    return kPIRedditKindValueLink;
 }
 
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary {
@@ -44,7 +42,6 @@
     if (self) {
         _subreddit = GDDynamicCast(dictionary[@"subreddit"], NSString);
         _text = GDDynamicCast(dictionary[@"selftext"], NSString);
-        _ID = GDDynamicCast(dictionary[@"id"], NSString);
         _author = GDDynamicCast(dictionary[@"author"], NSString);
         _subredditID = GDDynamicCast(dictionary[@"subreddit_id"], NSString);
         _permalink = GDDynamicCast(dictionary[@"permalink"], NSString);

@@ -1,5 +1,5 @@
 //
-//  PIRedditLink.h
+//  PIRedditComment.m
 //  RedditClient
 
 /*
@@ -26,46 +26,14 @@
  THE SOFTWARE.
  */
 
-#import "PIRedditKind.h"
+#import "PIRedditComment.h"
 
-extern NSString * const kPIRedditKindValueLink;
+NSString * const kPIRedditKindValueComment = @"t1";
 
-/**
- Class which represents Reddit "link kind".
- */
-@interface PIRedditLink : PIRedditKind
+@implementation PIRedditComment
 
-/**
- Subreddit the link belongs to.
- */
-@property (readonly, copy, nonatomic) NSString *subreddit;
-/**
- Link post's full text.
- */
-@property (readonly, copy, nonatomic) NSString *text;
-/**
- Link's author.
- */
-@property (readonly, copy, nonatomic) NSString *author;
-/**
- ID of a subreddit the link belongs to.
- */
-@property (readonly, copy, nonatomic) NSString *subredditID;
-/**
- Permalink of a link.
- */
-@property (readonly, copy, nonatomic) NSString *permalink;
-/**
- String that represents link's URL.
- */
-@property (readonly, copy, nonatomic) NSString *url;
-/**
- Links title.
- */
-@property (readonly, copy, nonatomic) NSString *title;
-/**
- A date the link was created in UTC.
- */
-@property (readonly, copy, nonatomic) NSDate *createdUTC;
+- (NSString *)kind {
+    return kPIRedditKindValueComment;
+}
 
 @end

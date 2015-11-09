@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		9A06B5281BDC08B4009F2EEC /* PIRedditRESTControllerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A06B5271BDC08B4009F2EEC /* PIRedditRESTControllerTests.m */; };
 		9A06B5311BDC23AD009F2EEC /* PIRedditSerializationStrategyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A06B5301BDC23AD009F2EEC /* PIRedditSerializationStrategyTests.m */; };
+		9A5404FD1BF126C00003DEA7 /* PIRedditComment.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A5404FC1BF126C00003DEA7 /* PIRedditComment.m */; };
 		9A7645BD1BEBF518009121B7 /* PIRedditKindTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A7645BC1BEBF518009121B7 /* PIRedditKindTests.m */; };
 		9ABE2C6C1BE94579001EEC83 /* PIRedditListing.m in Sources */ = {isa = PBXBuildFile; fileRef = 9ABE2C6B1BE94579001EEC83 /* PIRedditListing.m */; };
 		9ABE2C761BE951BC001EEC83 /* PIRedditLink.m in Sources */ = {isa = PBXBuildFile; fileRef = 9ABE2C751BE951BC001EEC83 /* PIRedditLink.m */; };
@@ -46,6 +47,8 @@
 /* Begin PBXFileReference section */
 		9A06B5271BDC08B4009F2EEC /* PIRedditRESTControllerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PIRedditRESTControllerTests.m; sourceTree = "<group>"; };
 		9A06B5301BDC23AD009F2EEC /* PIRedditSerializationStrategyTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PIRedditSerializationStrategyTests.m; sourceTree = "<group>"; };
+		9A5404FB1BF126C00003DEA7 /* PIRedditComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PIRedditComment.h; sourceTree = "<group>"; };
+		9A5404FC1BF126C00003DEA7 /* PIRedditComment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PIRedditComment.m; sourceTree = "<group>"; };
 		9A7645BC1BEBF518009121B7 /* PIRedditKindTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PIRedditKindTests.m; sourceTree = "<group>"; };
 		9ABE2C6A1BE94579001EEC83 /* PIRedditListing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PIRedditListing.h; sourceTree = "<group>"; };
 		9ABE2C6B1BE94579001EEC83 /* PIRedditListing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PIRedditListing.m; sourceTree = "<group>"; };
@@ -114,6 +117,8 @@
 			children = (
 				9ABE2C6A1BE94579001EEC83 /* PIRedditListing.h */,
 				9ABE2C6B1BE94579001EEC83 /* PIRedditListing.m */,
+				9A5404FB1BF126C00003DEA7 /* PIRedditComment.h */,
+				9A5404FC1BF126C00003DEA7 /* PIRedditComment.m */,
 				9ABE2C741BE951BC001EEC83 /* PIRedditLink.h */,
 				9ABE2C751BE951BC001EEC83 /* PIRedditLink.m */,
 				9ABE2C771BE9526E001EEC83 /* Private */,
@@ -332,6 +337,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9A5404FD1BF126C00003DEA7 /* PIRedditComment.m in Sources */,
 				9AC50A661BD8220900644F77 /* ViewController.m in Sources */,
 				9AC7EBC61BE16620000949A0 /* TestAppDelegate.m in Sources */,
 				9ABE2C7C1BE9526E001EEC83 /* PIRedditKind.m in Sources */,
