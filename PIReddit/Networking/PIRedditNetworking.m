@@ -136,6 +136,11 @@ NSString * const kPIRHTTPMethodPOST = @"POST";
     if (time != 0) { params[@"t"] = PIRedditStringFromTime(time); }
     if (fullNameBefore) { params[@"before"] = fullNameBefore; }
     if (fullNameAfter) { params[@"after"] = fullNameAfter; }
+    if (otherParams.count) {
+        for (NSString *key in otherParams.allKeys) {
+            params[key] = otherParams[key];
+        }
+    }
     
     NSString *path = subreddit ? [NSString stringWithFormat:@"r/%@/search", subreddit] : @"search";
     __weak typeof(self) weakSelf = self;
