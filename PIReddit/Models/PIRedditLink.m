@@ -33,27 +33,49 @@ NSString * const kPIRedditKindValueLink = @"t3";
 
 @implementation PIRedditLink
 
-- (NSString *)kind {
-    return kPIRedditKindValueLink;
+@synthesize subreddit = _subreddit, text = _text, author = _author, subredditID = _subredditID, permalink = _permalink, url = _url, title = _title, createdUTC = _createdUTC;
+
+- (NSString *)subreddit {
+    return _subreddit ?: (_subreddit = GDDynamicCast(self.allFields[@"subreddit"], NSString));
 }
 
-- (instancetype)initWithDictionary:(NSDictionary *)dictionary {
-    self = [super initWithDictionary:dictionary];
-    if (self) {
-        _subreddit = GDDynamicCast(dictionary[@"subreddit"], NSString);
-        _text = GDDynamicCast(dictionary[@"selftext"], NSString);
-        _author = GDDynamicCast(dictionary[@"author"], NSString);
-        _subredditID = GDDynamicCast(dictionary[@"subreddit_id"], NSString);
-        _permalink = GDDynamicCast(dictionary[@"permalink"], NSString);
-        _url = GDDynamicCast(dictionary[@"url"], NSString);
-        _title = GDDynamicCast(dictionary[@"title"], NSString);
-        NSTimeInterval createdTimeinterval = [GDDynamicCast(dictionary[@"created_utc"], NSNumber) doubleValue];
+- (NSString *)text {
+    return _text ?: (_text = GDDynamicCast(self.allFields[@"selftext"], NSString));
+}
+
+- (NSString *)author {
+    return _author ?: (_author = GDDynamicCast(self.allFields[@"author"], NSString));
+}
+
+- (NSString *)subredditID {
+    return _subredditID ?: (_subredditID = GDDynamicCast(self.allFields[@"subreddit_id"], NSString));
+}
+
+- (NSString *)permalink {
+    return _permalink ?: (_permalink = GDDynamicCast(self.allFields[@"permalink"], NSString));
+}
+
+- (NSString *)url {
+    return _url ?: (_url = GDDynamicCast(self.allFields[@"url"], NSString));
+}
+
+- (NSString *)title {
+    return _title ?: (_title = GDDynamicCast(self.allFields[@"title"], NSString));
+}
+
+- (NSDate *)createdUTC {
+    if (!_createdUTC) {
+        NSTimeInterval createdTimeinterval = [GDDynamicCast(self.allFields[@"created_utc"], NSNumber) doubleValue];
         if (createdTimeinterval) {
             _createdUTC = [NSDate dateWithTimeIntervalSince1970:createdTimeinterval];
         }
     }
     
-    return self;
+    return _createdUTC;
+}
+
+- (NSString *)kind {
+    return kPIRedditKindValueLink;
 }
 
 @end

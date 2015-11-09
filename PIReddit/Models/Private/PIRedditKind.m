@@ -32,9 +32,14 @@
 #import "PIRedditComment.h"
 
 @implementation PIRedditKind
+@synthesize ID = _ID;
 
 - (NSString *)fullName {
     return self.ID ? [NSString stringWithFormat:@"%@_%@", self.kind, self.ID] : nil;
+}
+
+- (NSString *)ID {
+    return _ID ?: (_ID = GDDynamicCast(self.allFields[@"id"], NSString));
 }
 
 + (Class)classForKind:(NSString *)kind {
@@ -57,7 +62,6 @@
     
     self = [super initWithDictionary:dictionary];
     if (self) {
-        _ID = GDDynamicCast(dictionary[@"id"], NSString);
         _allFields = dictionary;
     }
     
