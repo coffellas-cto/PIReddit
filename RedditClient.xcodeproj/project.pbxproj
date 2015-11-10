@@ -216,9 +216,9 @@
 		9AC7EBAE1BDC282D000949A0 /* PIReddit */ = {
 			isa = PBXGroup;
 			children = (
-				9A29F4301BF28F0A002B8F24 /* Utils */,
 				9ABE2C691BE9455D001EEC83 /* Models */,
 				9AC7EBAF1BDC282D000949A0 /* Networking */,
+				9A29F4301BF28F0A002B8F24 /* Utils */,
 				9AC7EBB61BDC282D000949A0 /* PIRedditCommon.h */,
 				9AC7EBB71BDC282D000949A0 /* PIRedditConstants.h */,
 				9AC7EBB81BDC282D000949A0 /* PIRedditConstants.m */,
