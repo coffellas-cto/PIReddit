@@ -1,5 +1,5 @@
 //
-//  PIRedditNetworking_Private.h
+//  PIRedditApp_Private.h
 //  RedditClient
 
 /*
@@ -26,13 +26,18 @@
  THE SOFTWARE.
  */
 
-#import "PIRedditNetworking.h"
+#import "PIRedditApp.h"
 
-@interface PIRedditNetworking ()
+@interface PIRedditApp ()
 
 /**
  Initial access token to be inserted explicitly.
  */
 - (void)setAccessToken:(NSString *)accessToken;
+
+/**
+ Initial refresh token to be inserted explicitly.
+ */
+- (void)setRefreshToken:(NSString *)refresh;
 
 @end

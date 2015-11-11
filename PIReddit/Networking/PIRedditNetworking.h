@@ -32,35 +32,13 @@
 typedef void(^PIRedditNetworkingCompletion)(NSError *error, id responseObject);
 
 @class PIRedditListing;
+@class PIRedditApp;
 
 /**
  Class that sends requests to Reddit API.
  @attention If you don't set the `encryptionKey` property, no encryption will be used for locally saved token.
  */
 @interface PIRedditNetworking : NSObject
-
-/**
- User agent string to forward in User-Agent HTTP header field.
- */
-@property (readwrite, copy, atomic) NSString *userAgent;
-/**
- Must correspond to `redirect uri` string you have used when creating your app at reddit.com.
- */
-@property (readwrite, copy, atomic) NSString *redirectURI;
-/**
- Must correspond to `installed app` string which was generated after you created your app at reddit.com.
- */
-@property (readwrite, copy, atomic) NSString *clientName;
-/**
- Current access token.
- */
-@property (readonly, copy, atomic) NSString *accessToken;
-/**
- Key to encrypt locally saved token.
- @discussion This value must be the same between app launches, otherwise restored token will be corrupted.
- @attention No encryption will be used if you don't provide this key.
- */
-@property (readwrite, copy, atomic) NSString *encryptionKey;
 
 /**
  Operation queue on which all requests are executed.
@@ -85,9 +63,6 @@ typedef void(^PIRedditNetworkingCompletion)(NSError *error, id responseObject);
 - (NSOperation *)searchFor:(NSString *)searchTerm
                      limit:(NSUInteger)limit
                 completion:(void(^)(NSError *error, PIRedditListing *listing))completion;
-
-// TODO:
-// https://www.reddit.com/dev/api/oauth#GET_search
 
 /**
  Search links page on Reddit.
@@ -122,6 +97,12 @@ typedef void(^PIRedditNetworkingCompletion)(NSError *error, id responseObject);
                            depth:(NSUInteger)depth
                            limit:(NSUInteger)limit
                       completion:(void(^)(NSError *error, id object))completion;
+
+/**
+ Sets the `PIRedditApp` application object as a dependecy.
+ @param app Previousely set up reddit application object.
+ */
+- (void)setRedditApp:(PIRedditApp *)app;
 
 /**
  Singleton accessor.

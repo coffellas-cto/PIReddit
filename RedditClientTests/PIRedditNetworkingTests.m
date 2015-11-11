@@ -7,7 +7,8 @@
 //
 
 #import <XCTest/XCTest.h>
-#import "PIRedditNetworking_Private.h"
+#import "PIRedditNetworking.h"
+#import "PIRedditApp_Private.h"
 #import "PIRedditListing.h"
 #import "PIRedditLink.h"
 
@@ -41,57 +42,18 @@
                          redirectURI:(NSString *)redirectURI
                           clientName:(NSString *)clientName
                          accessToken:(NSString *)accessToken
-                       encryptionKey:(NSString *)encryptionKey
 {
     networking = [PIRedditNetworking new];
-    networking.userAgent = userAgent;
-    networking.redirectURI = redirectURI;
-    networking.clientName = clientName;
-    networking.accessToken = accessToken;
-    networking.encryptionKey = encryptionKey;
+    PIRedditApp *app = [PIRedditApp appWithUserAgent:userAgent redirectURI:redirectURI clientName:clientName];
+    app.accessToken = accessToken;
+    [networking setRedditApp:app];
 }
 
 - (void)properSetup {
     [self setupNetworkingWithUserAgent:@"RedditClientTestiOS"
                            redirectURI:@"testredditclient://apiredirect"
                             clientName:@"nhFJDb_f9RYThw"
-                           accessToken:@"45906542-4SEAI3f6JfQ2fKQtZB-bQf2mC0I"
-                         encryptionKey:@"q-nv2-tnt-v3t-q53-qt474-t"];
-}
-
-- (void)testUserAgentInvariant {
-    NSString *s = @"userAgent";
-    networking = [PIRedditNetworking new];
-    networking.userAgent = @"userAgent";
-    XCTAssertEqualObjects(s, networking.userAgent);
-}
-
-- (void)testRedirectURIInvariant {
-    NSString *s = @"redirectURI";
-    networking = [PIRedditNetworking new];
-    networking.redirectURI = @"redirectURI";
-    XCTAssertEqualObjects(s, networking.redirectURI);
-}
-
-- (void)testClientNameInvariant {
-    NSString *s = @"clientName";
-    networking = [PIRedditNetworking new];
-    networking.clientName = @"clientName";
-    XCTAssertEqualObjects(s, networking.clientName);
-}
-
-- (void)testAccessTokenInvariant {
-    NSString *s = @"accessToken";
-    networking = [PIRedditNetworking new];
-    networking.accessToken = @"accessToken";
-    XCTAssertEqualObjects(s, networking.accessToken);
-}
-
-- (void)testEncryptionKeyInvariant {
-    NSString *s = @"encryptionKey";
-    networking = [PIRedditNetworking new];
-    networking.encryptionKey = @"encryptionKey";
-    XCTAssertEqualObjects(s, networking.encryptionKey);
+                           accessToken:@"45906542-4SEAI3f6JfQ2fKQtZB-bQf2mC0I"];
 }
 
 - (void)testSearch {

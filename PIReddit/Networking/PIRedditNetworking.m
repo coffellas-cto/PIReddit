@@ -26,11 +26,12 @@
  THE SOFTWARE.
  */
 
-#import "PIRedditNetworking_Private.h"
+#import "PIRedditNetworking.h"
 #import "PIRedditRESTController.h"
 #import "PIRedditSerializationStrategy.h"
 #import "PIRedditCommon.h"
 #import "PIRedditListing.h"
+#import "PIRedditApp_Private.h"
 
 NSString * const kPIRHTTPMethodGET = @"GET";
 NSString * const kPIRHTTPMethodPOST = @"POST";
@@ -55,7 +56,7 @@ NSString * const kPIRHTTPMethodPOST = @"POST";
 
 @property (readonly, nonatomic) PIRedditRESTController *REST;
 @property (readonly, nonatomic) NSDictionary *additionalHTTPHeaders;
-@property (readwrite, copy, atomic) NSString *refreshToken;
+@property (readwrite, atomic) PIRedditApp *app;
 
 @end
 
@@ -76,19 +77,11 @@ NSString * const kPIRHTTPMethodPOST = @"POST";
     }
 }
 
-- (void)setAccessToken:(NSString *)accessToken {
-    @synchronized(self) {
-        [self willChangeValueForKey:NSStringFromSelector(@selector(accessToken))];
-        _accessToken = accessToken;
-        [self didChangeValueForKey:NSStringFromSelector(@selector(accessToken))];
-    }
-}
-
 - (NSDictionary *)additionalHTTPHeaders {
     @synchronized(self) {
         if (!_additionalHTTPHeaders) {
-            _additionalHTTPHeaders = @{@"Authorization": [NSString stringWithFormat:@"bearer %@", self.accessToken],
-                                       @"User-Agent": self.userAgent ?: @"Unknown User Agent"};
+            _additionalHTTPHeaders = @{@"Authorization": [NSString stringWithFormat:@"bearer %@", self.app.accessToken],
+                                       @"User-Agent": self.app.userAgent ?: @"Unknown User Agent"};
         }
     }
     
@@ -109,6 +102,12 @@ NSString * const kPIRHTTPMethodPOST = @"POST";
 }
 
 #pragma mark - Public Methods
+
+- (void)setRedditApp:(PIRedditApp *)app {
+    self.app = app;
+    [self.app addObserver:self forKeyPath:NSStringFromSelector(@selector(accessToken)) options:NSKeyValueObservingOptionNew context:NULL];
+    [self.app addObserver:self forKeyPath:NSStringFromSelector(@selector(userAgent)) options:NSKeyValueObservingOptionNew context:NULL];
+}
 
 - (NSOperation *)searchFor:(NSString *)searchTerm
                      limit:(NSUInteger)limit
@@ -153,6 +152,7 @@ NSString * const kPIRHTTPMethodPOST = @"POST";
                            depth:(NSUInteger)depth
                            limit:(NSUInteger)limit
                       completion:(void(^)(NSError *error, id object))completion {
+    // TODO: Finish.
     NSParameterAssert(linkID);
     NSMutableDictionary *params = [NSMutableDictionary new];
     params[@"article"] = linkID;
@@ -249,9 +249,9 @@ NSString * const kPIRHTTPMethodPOST = @"POST";
                     
                     dispatch_async(dispatch_get_main_queue(), ^{
                         XLog(@"[1] %@", [NSThread currentThread]);
-                        NSString *oldToken = self.accessToken;
+                        NSString *oldToken = self.app.accessToken;
                         [_tokenRefreshLock lock];
-                        if ([self.accessToken isEqualToString:oldToken]) {
+                        if ([self.app.accessToken isEqualToString:oldToken]) {
                             // Token is the same. Must reauthorize
                             [self refreshTokenWithCompletion:^(NSError *tokenError, NSString *newToken) {
                                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -260,7 +260,7 @@ NSString * const kPIRHTTPMethodPOST = @"POST";
                                     if (tokenError) {
                                         completion(tokenError, nil);
                                     } else {
-                                        self.accessToken = newToken;
+                                        self.app.accessToken = newToken;
                                         resendRequestBlock();
                                     }
                                 });
@@ -291,7 +291,7 @@ NSString * const kPIRHTTPMethodPOST = @"POST";
 #pragma mark - Token
 
 - (void)refreshTokenWithCompletion:(void(^)(NSError *error, NSString *newToken))completion {
-    if (!self.clientName.length) {
+    if (!self.app.clientName.length) {
         // TODO: error
         NSError *error = [NSError errorWithDomain:PIRedditErrorDomain code:-1000 userInfo:nil];
         if (completion) {
@@ -302,12 +302,12 @@ NSString * const kPIRHTTPMethodPOST = @"POST";
     
     PIRedditRESTController *REST = [[PIRedditRESTController alloc] initWithSession:[NSURLSession sharedSession] baseURL:[NSURL URLWithString:@"https://www.reddit.com/api/v1/"]];
 
-    REST.additionalHTTPHeaders = [NSDictionary pireddit_basicAuthDictionaryWithUser:self.clientName];
+    REST.additionalHTTPHeaders = [NSDictionary pireddit_basicAuthDictionaryWithUser:self.app.clientName];
     NSOperation *op = [REST requestOperationWithMethod:kPIRHTTPMethodPOST
                                                 atPath:@"access_token"
                                             parameters:@{@"grant_type": @"refresh_token",
                                                          // TODO: real refresh token here
-                                                         @"refresh_token": self.refreshToken ?: @"45906542-yBkmMHPRtH5fXkz8nm43s2pvsSM"}
+                                                         @"refresh_token": self.app.refreshToken ?: @"45906542-yBkmMHPRtH5fXkz8nm43s2pvsSM"}
                                             completion:^(NSError *opError, id responseObject, NSURLRequest *originalRequest)
     {
         NSString *newToken;
@@ -336,7 +336,7 @@ NSString * const kPIRHTTPMethodPOST = @"POST";
 #pragma mark - KVO
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
-    if (object == self &&
+    if (object == self.app &&
         ([keyPath isEqualToString:NSStringFromSelector(@selector(accessToken))] ||
          [keyPath isEqualToString:NSStringFromSelector(@selector(userAgent))]))
     {
@@ -350,20 +350,17 @@ NSString * const kPIRHTTPMethodPOST = @"POST";
 
 #pragma mark - Life Cycle
 
-- (instancetype)init
-{
+- (instancetype)init {
     self = [super init];
     if (self) {
-        [self addObserver:self forKeyPath:NSStringFromSelector(@selector(accessToken)) options:NSKeyValueObservingOptionNew context:NULL];
-        [self addObserver:self forKeyPath:NSStringFromSelector(@selector(userAgent)) options:NSKeyValueObservingOptionNew context:NULL];
         _tokenRefreshLock = [NSLock new];
     }
     return self;
 }
 
 - (void)dealloc {
-    [self removeObserver:self forKeyPath:NSStringFromSelector(@selector(accessToken))];
-    [self removeObserver:self forKeyPath:NSStringFromSelector(@selector(userAgent))];
+    [self.app removeObserver:self forKeyPath:NSStringFromSelector(@selector(accessToken))];
+    [self.app removeObserver:self forKeyPath:NSStringFromSelector(@selector(userAgent))];
 }
 
 + (instancetype)sharedInstance {
