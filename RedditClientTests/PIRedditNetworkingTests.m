@@ -112,7 +112,7 @@
     [self waitForExpectationsWithTimeout:1000 handler:nil];
 }
 
-- (void)testCommentsRetieval {
+- (void)testCommentsRetrieval {
     [self properSetup];
     XCTestExpectation *exp = [self expectationWithDescription:@(__PRETTY_FUNCTION__)];
     [networking commentsForLink:@"2j3c5p" depth:0 limit:1 completion:^(NSError *error, id object) {
