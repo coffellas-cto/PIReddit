@@ -36,7 +36,7 @@ typedef void(^PIRedditNetworkingCompletion)(NSError *error, id responseObject);
 
 /**
  Class that sends requests to Reddit API.
- @attention If you don't set the `encryptionKey` property, no encryption will be used for locally saved token.
+ @attention You must set your application settings using the `setRedditApp:` method in order to be able to send any requests to Reddit API.
  */
 @interface PIRedditNetworking : NSObject
 
@@ -71,7 +71,7 @@ typedef void(^PIRedditNetworkingCompletion)(NSError *error, id responseObject);
  @param fullNameBefore Previous link's fullname string.
  @param fullNameAfter Next link's fullname string.
  @param subreddit A subreddit to search on. Can be `nil`.
- @param time Creation time limit. one of `PIRedditTime` enum values. Can be 0.
+ @param time Creation time limit. One of `PIRedditTime` enum values. Can be 0.
  @param otherParams Dictionary of parameters as described at https://www.reddit.com/dev/api/oauth#GET_search. Can be `nil`.
  @param completion Block to be called after response is received.
  @return Operation object.
