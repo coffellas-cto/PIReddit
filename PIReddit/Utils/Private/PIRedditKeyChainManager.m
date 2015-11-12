@@ -17,7 +17,7 @@
     searchDictionary[(__bridge id)kSecAttrService] = NSStringFromClass(self.class);
     
     searchDictionary[(__bridge id)kSecMatchLimit] = (__bridge id)kSecMatchLimitOne;
-    searchDictionary[(__bridge id)kSecReturnPersistentRef] = @YES;
+    searchDictionary[(__bridge id)kSecReturnData] = @YES;
     
     CFTypeRef result = NULL;
     SecItemCopyMatching((__bridge CFDictionaryRef)searchDictionary, &result);

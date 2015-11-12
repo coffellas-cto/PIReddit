@@ -12,6 +12,7 @@
 		9A21EDC51BF3C24200FE6192 /* PIRedditApp.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A21EDC41BF3C24200FE6192 /* PIRedditApp.m */; };
 		9A21EDC81BF3C9EE00FE6192 /* PIRedditAppTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A21EDC71BF3C9EE00FE6192 /* PIRedditAppTests.m */; };
 		9A21EDCD1BF3CD4D00FE6192 /* PIRedditKeyChainManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A21EDCC1BF3CD4D00FE6192 /* PIRedditKeyChainManager.m */; };
+		9A21EDCF1BF5324400FE6192 /* PIRedditKeychainManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A21EDCE1BF5324400FE6192 /* PIRedditKeychainManagerTests.m */; };
 		9A5404FD1BF126C00003DEA7 /* PIRedditComment.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A5404FC1BF126C00003DEA7 /* PIRedditComment.m */; };
 		9A7645BD1BEBF518009121B7 /* PIRedditKindTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A7645BC1BEBF518009121B7 /* PIRedditKindTests.m */; };
 		9ABE2C6C1BE94579001EEC83 /* PIRedditListing.m in Sources */ = {isa = PBXBuildFile; fileRef = 9ABE2C6B1BE94579001EEC83 /* PIRedditListing.m */; };
@@ -56,6 +57,7 @@
 		9A21EDCA1BF3CD4D00FE6192 /* PIRedditApp_Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PIRedditApp_Private.h; sourceTree = "<group>"; };
 		9A21EDCB1BF3CD4D00FE6192 /* PIRedditKeyChainManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PIRedditKeyChainManager.h; sourceTree = "<group>"; };
 		9A21EDCC1BF3CD4D00FE6192 /* PIRedditKeyChainManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PIRedditKeyChainManager.m; sourceTree = "<group>"; };
+		9A21EDCE1BF5324400FE6192 /* PIRedditKeychainManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PIRedditKeychainManagerTests.m; sourceTree = "<group>"; };
 		9A5404FB1BF126C00003DEA7 /* PIRedditComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PIRedditComment.h; sourceTree = "<group>"; };
 		9A5404FC1BF126C00003DEA7 /* PIRedditComment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PIRedditComment.m; sourceTree = "<group>"; };
 		9A7645BC1BEBF518009121B7 /* PIRedditKindTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PIRedditKindTests.m; sourceTree = "<group>"; };
@@ -220,6 +222,7 @@
 				9AC7EBBD1BDEBF9D000949A0 /* PIRMockSession.h */,
 				9AC7EBBE1BDEBF9D000949A0 /* PIRMockSession.m */,
 				9A7645BC1BEBF518009121B7 /* PIRedditKindTests.m */,
+				9A21EDCE1BF5324400FE6192 /* PIRedditKeychainManagerTests.m */,
 				9AC50A7A1BD8220900644F77 /* Info.plist */,
 				9AC7EBC31BE16389000949A0 /* TestAppDelegate.h */,
 				9AC7EBC41BE16389000949A0 /* TestAppDelegate.m */,
@@ -395,6 +398,7 @@
 				9A06B5281BDC08B4009F2EEC /* PIRedditRESTControllerTests.m in Sources */,
 				9A7645BD1BEBF518009121B7 /* PIRedditKindTests.m in Sources */,
 				9AC7EBBF1BDEBF9D000949A0 /* PIRMockSession.m in Sources */,
+				9A21EDCF1BF5324400FE6192 /* PIRedditKeychainManagerTests.m in Sources */,
 				9A21EDC81BF3C9EE00FE6192 /* PIRedditAppTests.m in Sources */,
 				9AEA7E521BDAE05200B015E0 /* XCTest+PIReddit.m in Sources */,
 				9AEA7E4E1BDACD0200B015E0 /* PIRedditOperationTests.m in Sources */,
