@@ -48,6 +48,24 @@
     }
 }
 
+#pragma mark - Equality
+
+- (BOOL)isEqual:(id)object {
+    if (self == object) {
+        return YES;
+    }
+    
+    if (![object isMemberOfClass:[self class]]) {
+        return NO;
+    }
+    
+    return [self hash] == [object hash];
+}
+
+- (NSUInteger)hash {
+    return [NSString stringWithFormat:@"%@%@%@", self.userAgent, self.redirectURI, self.clientName].hash;
+}
+
 #pragma mark - Life Cycle
 
 - (instancetype)init {

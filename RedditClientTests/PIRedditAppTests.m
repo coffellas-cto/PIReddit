@@ -53,4 +53,25 @@
     XCTAssertEqualObjects(s, app.accessToken);
 }
 
+- (void)testRefreshTokenInvariant {
+    NSString *s = @"refreshToken";
+    PIRedditApp *app = [PIRedditApp new];
+    app.refreshToken = @"refreshToken";
+    XCTAssertEqualObjects(s, app.refreshToken);
+}
+
+- (void)testConstructorsAndEquality {
+    PIRedditApp *app1 = [[PIRedditApp alloc] initWithUserAgent:@"userAgent" redirectURI:@"redirectURI" clientName:@"clientName"];
+    PIRedditApp *app2 = app1;
+    XCTAssertTrue([app1 isEqual:app2]);
+    app2 = [PIRedditApp appWithUserAgent:@"userAgent" redirectURI:@"redirectURI" clientName:@"clientName"];
+    XCTAssertEqualObjects(app1, app2);
+    
+    app1 = [[PIRedditApp alloc] initWithUserAgent:@"userAgent1" redirectURI:@"redirectURI" clientName:@"clientName"];
+    app2 = [PIRedditApp appWithUserAgent:@"userAgent2" redirectURI:@"redirectURI" clientName:@"clientName"];
+    XCTAssertNotEqualObjects(app1, app2);
+    
+    XCTAssertNotEqualObjects(app1, @"userAgent1redirectURIclientName");
+}
+
 @end
