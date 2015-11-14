@@ -53,13 +53,16 @@ typedef void(^PIRedditNetworkingCompletion)(NSError *error, id responseObject);
 /**
  Tries to start OAuth2 authorization process for an application described by an `app` property.
  @discussion Catch the callback from Reddit OAuth in your `AppDelegate`'s `application:openURL:options:` and forward a received `url` object to `processRedirectURL:completion:` method of this class to finish authorization.
+ 
+ Read about the whole routine here: https://github.com/reddit/reddit/wiki/OAuth2.
+ @return `NO` if app object wasn't set up correctly.
  */
-- (void)authorize;
+- (BOOL)authorize;
 
 /**
  Logs out currently authorized user by cleaning tokens for `PIRedditApp`.
  */
-- (void)logout;
+- (void)cleanSession;
 
 /**
  Processes Reddit's OAuth redirect URL.

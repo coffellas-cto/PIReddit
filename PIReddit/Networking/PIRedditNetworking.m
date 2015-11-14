@@ -105,7 +105,35 @@ NSString * const kPIRedditAPIOAuthBaseURL = @"https://oauth.reddit.com/";
 
 #pragma mark - Public Methods
 
-- (void)logout {
+- (BOOL)authorize {
+    @synchronized(self.app) {
+        if (!(self.app.clientName && self.app.redirectURI)) {
+            return NO;
+        }
+        
+        NSURL *URL = [NSURL URLWithString:[NSString stringWithFormat:@"%@authorize?"
+                                           "client_id=%@"
+                                           "&response_type=code"
+                                           "&state=RANDOM_STRING"
+                                           "&redirect_uri=%@"
+                                           "&duration=permanent"
+                                           "&scope=identity,account,read,subscribe,submit",
+                                           kPIRedditAPIBaseURL,
+                                           self.app.clientName,
+                                           self.app.redirectURI]];
+        
+#ifdef TARGET_OS_IPHONE
+        [[UIApplication sharedApplication] openURL:URL];
+#else
+        // TODO: Test
+        [[NSWorkspace sharedWorkspace] openURL:URL];
+#endif
+        
+        return YES;
+    }
+}
+
+- (void)cleanSession {
     @synchronized(self.app) {
         self.app.accessToken = nil;
         self.app.refreshToken = nil;

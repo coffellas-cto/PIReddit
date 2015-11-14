@@ -17,10 +17,6 @@
 
 @implementation ViewController
 
-- (void)authorize {
-    
-}
-
 - (void)startUsage {
     [[PIRedditNetworking sharedInstance] searchFor:@"confused travolta" limit:1 completion:^(NSError *error, PIRedditListing *listing) {
         NSString *message;

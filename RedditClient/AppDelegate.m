@@ -40,19 +40,11 @@
     
     [[PIRedditNetworking sharedInstance] setRedditApp:app];
     
-    
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         if (!app.authorized) {
             // Read the manual
             // https://github.com/reddit/reddit/wiki/OAuth2
-            
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://www.reddit.com/api/v1/authorize?"
-                                                        "client_id=nhFJDb_f9RYThw"
-                                                        "&response_type=code"
-                                                        "&state=RANDOM_STRING"
-                                                        "&redirect_uri=testredditclient://apiredirect"
-                                                        "&duration=permanent"
-                                                        "&scope=identity,account,read,subscribe,submit"]];
+            [[PIRedditNetworking sharedInstance] authorize];   
         } else {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reddit_authorized" object:nil];
         }

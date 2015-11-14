@@ -49,7 +49,7 @@
     PIRedditApp *app = [PIRedditApp appWithUserAgent:userAgent redirectURI:redirectURI clientName:clientName];
     [networking setRedditApp:app];
     if (forceLogout) {
-        [networking logout];
+        [networking cleanSession];
         XCTAssertFalse(app.authorized);
         app.accessToken = accessToken;
         app.refreshToken = refreshToken;
