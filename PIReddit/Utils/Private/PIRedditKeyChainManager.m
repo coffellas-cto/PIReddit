@@ -4,12 +4,24 @@
 
 #import "PIRedditKeyChainManager.h"
 
+const NSStringEncoding kPIRedditKeyChainManagerEncoding = NSUTF8StringEncoding;
+
 @implementation PIRedditKeyChainManager
+
++ (NSString *)stringForIdentifier:(NSString *)identifier {
+    NSString *retVal;
+    NSData *data = [self searchKeychainCopyMatching:identifier];
+    if (data) {
+        retVal = [[NSString alloc] initWithData:data encoding:kPIRedditKeyChainManagerEncoding];
+    }
+    
+    return retVal.length ? retVal : nil;
+}
 
 + (NSData *)searchKeychainCopyMatching:(NSString *)identifier {
     NSMutableDictionary *searchDictionary = [NSMutableDictionary new];
     
-    NSData *encodedIdentifier = [identifier dataUsingEncoding: NSUTF8StringEncoding];
+    NSData *encodedIdentifier = [identifier dataUsingEncoding: kPIRedditKeyChainManagerEncoding];
     
     searchDictionary[(__bridge id)kSecClass] = (__bridge id)kSecClassGenericPassword;
     searchDictionary[(__bridge id)kSecAttrGeneric] = encodedIdentifier;
@@ -28,7 +40,7 @@
 + (BOOL)deletePasswordForIdentifier:(NSString *)identifier {
     NSMutableDictionary *searchDictionary = [NSMutableDictionary new];
     
-    NSData *encodedIdentifier = [identifier dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *encodedIdentifier = [identifier dataUsingEncoding:kPIRedditKeyChainManagerEncoding];
     
     searchDictionary[(__bridge id)kSecClass] = (__bridge id)kSecClassGenericPassword;
     searchDictionary[(__bridge id)kSecAttrGeneric] = encodedIdentifier;
@@ -44,8 +56,8 @@
     
     NSMutableDictionary *searchDictionary = [NSMutableDictionary new];
     
-    NSData *encodedIdentifier = [identifier dataUsingEncoding:NSUTF8StringEncoding];
-    NSData *encodedPassword = [password dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *encodedIdentifier = [identifier dataUsingEncoding:kPIRedditKeyChainManagerEncoding];
+    NSData *encodedPassword = [password dataUsingEncoding:kPIRedditKeyChainManagerEncoding];
     
     searchDictionary[(__bridge id)kSecClass] = (__bridge id)kSecClassGenericPassword;
     searchDictionary[(__bridge id)kSecAttrGeneric] = encodedIdentifier;

@@ -103,6 +103,13 @@ NSString * const kPIRHTTPMethodPOST = @"POST";
 
 #pragma mark - Public Methods
 
+- (void)logout {
+    @synchronized(self.app) {
+        self.app.accessToken = nil;
+        self.app.refreshToken = nil;
+    }
+}
+
 - (void)setRedditApp:(PIRedditApp *)app {
     NSParameterAssert(app);
     self.app = app;
@@ -301,14 +308,22 @@ NSString * const kPIRHTTPMethodPOST = @"POST";
         return;
     }
     
+    if (!self.app.refreshToken.length) {
+        // TODO: error
+        NSError *error = [NSError errorWithDomain:PIRedditErrorDomain code:-1000 userInfo:nil];
+        if (completion) {
+            completion(error, nil);
+        }
+        return;
+    }
+    
     PIRedditRESTController *REST = [[PIRedditRESTController alloc] initWithSession:[NSURLSession sharedSession] baseURL:[NSURL URLWithString:@"https://www.reddit.com/api/v1/"]];
 
     REST.additionalHTTPHeaders = [NSDictionary pireddit_basicAuthDictionaryWithUser:self.app.clientName];
     NSOperation *op = [REST requestOperationWithMethod:kPIRHTTPMethodPOST
                                                 atPath:@"access_token"
                                             parameters:@{@"grant_type": @"refresh_token",
-                                                         // TODO: real refresh token here
-                                                         @"refresh_token": self.app.refreshToken ?: @"45906542-yBkmMHPRtH5fXkz8nm43s2pvsSM"}
+                                                         @"refresh_token": self.app.refreshToken}
                                             completion:^(NSError *opError, id responseObject, NSURLRequest *originalRequest)
     {
         NSString *newToken;

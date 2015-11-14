@@ -27,23 +27,66 @@
  */
 
 #import "PIRedditApp.h"
+#import "PIRedditKeyChainManager.h"
+
+static inline NSString *s_PIRedditAppRefreshTokenID(PIRedditApp *app) {
+    return [NSString stringWithFormat:@"%lu.rt", (unsigned long)app.hash];
+}
+
+static inline NSString *s_PIRedditAppAccessTokenID(PIRedditApp *app) {
+    return [NSString stringWithFormat:@"%lu.at", (unsigned long)app.hash];
+}
 
 @implementation PIRedditApp
 
 #pragma mark - Accessors
 
+@synthesize refreshToken = _refreshToken, accessToken = _accessToken;
+
+- (NSString *)refreshToken {
+    @synchronized(self) {
+        if (!_refreshToken) {
+            _refreshToken = [PIRedditKeyChainManager stringForIdentifier:s_PIRedditAppRefreshTokenID(self)];
+        }
+    }
+    
+    return _refreshToken;
+}
+
 - (void)setRefreshToken:(NSString *)refreshToken {
     @synchronized(self) {
         [self willChangeValueForKey:NSStringFromSelector(@selector(refreshToken))];
         _refreshToken = refreshToken;
+        NSString *refreshTokenID = s_PIRedditAppRefreshTokenID(self);
+        if (!refreshToken) {
+            [PIRedditKeyChainManager deletePasswordForIdentifier:refreshTokenID];
+        } else {
+            [PIRedditKeyChainManager savePassword:refreshToken forIdentifier:refreshTokenID];
+        }
         [self didChangeValueForKey:NSStringFromSelector(@selector(refreshToken))];
     }
+}
+
+- (NSString *)accessToken {
+    @synchronized(self) {
+        if (!_accessToken) {
+            _accessToken = [PIRedditKeyChainManager stringForIdentifier:s_PIRedditAppAccessTokenID(self)];
+        }
+    }
+    
+    return _accessToken;
 }
 
 - (void)setAccessToken:(NSString *)accessToken {
     @synchronized(self) {
         [self willChangeValueForKey:NSStringFromSelector(@selector(accessToken))];
         _accessToken = accessToken;
+        NSString *accessTokenID = s_PIRedditAppAccessTokenID(self);
+        if (!accessToken) {
+            [PIRedditKeyChainManager deletePasswordForIdentifier:accessTokenID];
+        } else {
+            [PIRedditKeyChainManager savePassword:accessToken forIdentifier:accessTokenID];
+        }
         [self didChangeValueForKey:NSStringFromSelector(@selector(accessToken))];
     }
 }

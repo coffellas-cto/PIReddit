@@ -42,22 +42,49 @@
                          redirectURI:(NSString *)redirectURI
                           clientName:(NSString *)clientName
                          accessToken:(NSString *)accessToken
+                        refreshToken:(NSString *)refreshToken
+                         forceLogout:(BOOL)forceLogout
 {
     networking = [PIRedditNetworking new];
     PIRedditApp *app = [PIRedditApp appWithUserAgent:userAgent redirectURI:redirectURI clientName:clientName];
-    app.accessToken = accessToken;
     [networking setRedditApp:app];
+    if (forceLogout) {
+        [networking logout];
+        XCTAssertFalse(app.authorized);
+        app.accessToken = accessToken;
+        app.refreshToken = refreshToken;
+    } else {
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            if (!app.authorized) {
+                app.accessToken = accessToken;
+                app.refreshToken = refreshToken;
+            }
+        });
+    }
+    
+    XCTAssertTrue(app.authorized);
 }
 
-- (void)properSetup {
+- (void)setupWithForceLogout:(BOOL)forceLogout {
     [self setupNetworkingWithUserAgent:@"RedditClientTestiOS"
                            redirectURI:@"testredditclient://apiredirect"
                             clientName:@"nhFJDb_f9RYThw"
-                           accessToken:@"45906542-4SEAI3f6JfQ2fKQtZB-bQf2mC0I"];
+                           accessToken:@"45906542-4SEAI3f6JfQ2fKQtZB-bQf2mC0I"
+                          refreshToken:@"45906542-yBkmMHPRtH5fXkz8nm43s2pvsSM"
+                           forceLogout:forceLogout];
+}
+
+- (void)properSetup {
+    [self setupWithForceLogout:NO];
+}
+
+- (void)forceLogoutSetup {
+    [self setupWithForceLogout:YES];
 }
 
 - (void)testSearch {
-    [self properSetup];
+    [self forceLogoutSetup];
     XCTestExpectation *exp = [self expectationWithDescription:@(__PRETTY_FUNCTION__)];
     [networking searchFor:@"games" limit:2 completion:^(NSError *error, PIRedditListing *responseObject) {
         XCTAssertTrue(networking.app.authorized);
