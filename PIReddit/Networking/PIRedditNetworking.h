@@ -35,8 +35,8 @@ typedef void(^PIRedditNetworkingCompletion)(NSError *error, id responseObject);
 @class PIRedditApp;
 
 /**
- Class that sends requests to Reddit API.
- @attention You must set your application settings using the `setRedditApp:` method in order to be able to send any requests to Reddit API.
+ Class that sends requests to Reddit API server.
+ @attention You must set your application settings using the `setRedditApp:` method in order to be able to send any requests to Reddit API server.
  */
 @interface PIRedditNetworking : NSObject
 
