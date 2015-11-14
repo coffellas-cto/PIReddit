@@ -48,6 +48,12 @@
     }
 }
 
+- (BOOL)isAuthorized {
+    @synchronized(self) {
+        return self.refreshToken.length && self.accessToken.length;
+    }
+}
+
 #pragma mark - Equality
 
 - (BOOL)isEqual:(id)object {

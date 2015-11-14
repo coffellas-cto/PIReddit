@@ -46,12 +46,27 @@ typedef void(^PIRedditNetworkingCompletion)(NSError *error, id responseObject);
 @property (readonly, strong, nonatomic) NSOperationQueue *operationQueue;
 
 /**
+ Application object used to initialize current instance with.
+ */
+@property (readonly, strong, atomic) PIRedditApp *app;
+
+/**
+ Tries to start OAuth2 authorization process for an application described by an `app` property.
+ @discussion Catch the callback from Reddit OAuth in your `AppDelegate`'s `application:openURL:options:` and forward a received `url` object to `processRedirectURL:completion:` method of this class to finish authorization.
+ */
+- (void)authorize;
+
+/**
+ Logs out currently authorized user by cleaning tokens for `PIRedditApp`.
+ */
+- (void)logout;
+
+/**
  Processes Reddit's OAuth redirect URL.
  @param redirectURL URL received in `AppDelegate`'s `application:openURL:options:` method.
- @param error A pointer to `NSError *` object to be set if URL is not successfully processed or its content is unexpected.
- @return `YES` no error occured, `NO` otherwise.
+ @param completion A block which is called upon the completion of the operation. If an error occurs `error` parameter passed to the block represents the error, otherwise in contains `nil`.
  */
-- (BOOL)processRedirectURL:(NSURL *)redirectURL error:(NSError *__autoreleasing *)error;
+- (void)processRedirectURL:(NSURL *)redirectURL completion:(void(^)(NSError *error))completion;
 
 /**
  Search links page on Reddit.
@@ -100,7 +115,7 @@ typedef void(^PIRedditNetworkingCompletion)(NSError *error, id responseObject);
 
 /**
  Sets the `PIRedditApp` application object as a dependecy.
- @param app Previousely set up reddit application object.
+ @param app Previousely set up reddit application object. Cannot be `nil`.
  */
 - (void)setRedditApp:(PIRedditApp *)app;
 

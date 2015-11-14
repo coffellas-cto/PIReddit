@@ -56,7 +56,7 @@ NSString * const kPIRHTTPMethodPOST = @"POST";
 
 @property (readonly, nonatomic) PIRedditRESTController *REST;
 @property (readonly, nonatomic) NSDictionary *additionalHTTPHeaders;
-@property (readwrite, atomic) PIRedditApp *app;
+@property (readwrite, strong, atomic) PIRedditApp *app;
 
 @end
 
@@ -104,6 +104,7 @@ NSString * const kPIRHTTPMethodPOST = @"POST";
 #pragma mark - Public Methods
 
 - (void)setRedditApp:(PIRedditApp *)app {
+    NSParameterAssert(app);
     self.app = app;
     [self.app addObserver:self forKeyPath:NSStringFromSelector(@selector(accessToken)) options:NSKeyValueObservingOptionNew context:NULL];
     [self.app addObserver:self forKeyPath:NSStringFromSelector(@selector(userAgent)) options:NSKeyValueObservingOptionNew context:NULL];

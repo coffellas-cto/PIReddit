@@ -60,6 +60,7 @@
     [self properSetup];
     XCTestExpectation *exp = [self expectationWithDescription:@(__PRETTY_FUNCTION__)];
     [networking searchFor:@"games" limit:2 completion:^(NSError *error, PIRedditListing *responseObject) {
+        XCTAssertTrue(networking.app.authorized);
         XCTAssertNil(error);
         XCTAssertNotNil(responseObject);
         XCTAssertEqual(responseObject.children.count, 2);

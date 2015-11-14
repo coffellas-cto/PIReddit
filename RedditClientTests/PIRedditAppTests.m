@@ -62,6 +62,7 @@
 
 - (void)testConstructorsAndEquality {
     PIRedditApp *app1 = [[PIRedditApp alloc] initWithUserAgent:@"userAgent" redirectURI:@"redirectURI" clientName:@"clientName"];
+    XCTAssertFalse(app1.authorized);
     PIRedditApp *app2 = app1;
     XCTAssertTrue([app1 isEqual:app2]);
     app2 = [PIRedditApp appWithUserAgent:@"userAgent" redirectURI:@"redirectURI" clientName:@"clientName"];

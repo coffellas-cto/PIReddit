@@ -55,6 +55,14 @@
 @property (readonly, copy, atomic) NSString *refreshToken;
 
 /**
+ Boolean value which indicates if there is a user already authorized for this app.
+ @discussion  This value is set to `YES` if both `accessToken` and `refreshToken` are not `nil`. This value does not indicate whether current tokens are expired or not.
+ 
+ Nevertheless there is no need to call `authorize` method of `PIRedditNetworking` initialized with this instance if you don't want to change the user. If this property is `YES` `PIRedditNetworking` will automatically regain new access token every time it expires.
+ */
+@property (readonly, atomic, getter=isAuthorized) BOOL authorized;
+
+/**
  Initializes and returns a newly allocated app object with the specified settings.
  This is the designated initializer.
  @param userAgent User agent string to forward in User-Agent HTTP header field.
