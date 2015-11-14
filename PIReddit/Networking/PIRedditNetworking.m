@@ -35,6 +35,8 @@
 
 NSString * const kPIRHTTPMethodGET = @"GET";
 NSString * const kPIRHTTPMethodPOST = @"POST";
+NSString * const kPIRedditAPIBaseURL = @"https://www.reddit.com/api/v1/";
+NSString * const kPIRedditAPIOAuthBaseURL = @"https://oauth.reddit.com/";
 
 #pragma mark - Categories
 
@@ -91,7 +93,7 @@ NSString * const kPIRHTTPMethodPOST = @"POST";
 - (PIRedditRESTController *)REST {
     @synchronized(self) {
         if (!_REST) {
-            NSURL *baseURL = [NSURL URLWithString:@"https://oauth.reddit.com/"];
+            NSURL *baseURL = [NSURL URLWithString:kPIRedditAPIOAuthBaseURL];
             _REST = [[PIRedditRESTController alloc] initWithSession:[NSURLSession sharedSession] baseURL:baseURL];
         }
         
@@ -107,6 +109,87 @@ NSString * const kPIRHTTPMethodPOST = @"POST";
     @synchronized(self.app) {
         self.app.accessToken = nil;
         self.app.refreshToken = nil;
+    }
+}
+
+- (void)processRedirectURL:(NSURL *)url completion:(void (^)(NSError *))completion {
+    NSError *immediateError;
+    if (!self.app.redirectURI.length) {
+        // TODO: Error
+        immediateError = [NSError errorWithDomain:PIRedditErrorDomain code:-1000 userInfo:nil];
+    } else {
+        NSURLComponents *urlComponents = [NSURLComponents componentsWithURL:url
+                                                    resolvingAgainstBaseURL:NO];
+        NSURLComponents *appRedirectURIComponents = [NSURLComponents componentsWithString:self.app.redirectURI];
+        if ([urlComponents.scheme isEqualToString:appRedirectURIComponents.scheme] &&
+            [urlComponents.host isEqualToString:appRedirectURIComponents.host])
+        {
+            NSArray *queryItems = urlComponents.queryItems;
+            BOOL foundItem = NO;
+            for (NSURLQueryItem *item in queryItems) {
+                // TODO: RANDOM_STRING
+                if ([item.name isEqualToString:@"code"]) {
+                    foundItem = YES;
+                    NSString *code = item.value;
+                    if (code.length) {
+                        PIRedditRESTController *REST = [[PIRedditRESTController alloc] initWithSession:[NSURLSession sharedSession] baseURL:[NSURL URLWithString:kPIRedditAPIBaseURL]];
+                        
+                        REST.additionalHTTPHeaders = [NSDictionary pireddit_basicAuthDictionaryWithUser:self.app.clientName];
+                        NSOperation *op = [REST requestOperationWithMethod:kPIRHTTPMethodPOST
+                                                                    atPath:@"access_token"
+                                                                parameters:@{@"grant_type": @"authorization_code",
+                                                                             @"code": code,
+                                                                             @"redirect_uri": self.app.redirectURI}
+                                                                completion:^(NSError *error, id responseObject, NSURLRequest *originalRequest)
+                                           {
+                                               NSError *returnError = error;
+                                               if (!returnError) {
+                                                   NSString *tokenType = GDDynamicCast(responseObject[@"token_type"], NSString);
+                                                   NSString *accessToken = GDDynamicCast(responseObject[@"access_token"], NSString);
+                                                   NSString *refreshToken = GDDynamicCast(responseObject[@"refresh_token"], NSString);
+                                                   if (tokenType.length && accessToken.length && refreshToken.length) {
+                                                       @synchronized(self.app) {
+                                                           self.app.refreshToken = refreshToken;
+                                                           self.app.accessToken = accessToken;
+                                                       }
+                                                       // TODO: Send notification
+                                                   } else {
+                                                       // TODO: Error
+                                                       returnError = [NSError errorWithDomain:PIRedditErrorDomain code:-1000 userInfo:nil];
+                                                   }
+                                               }
+                                               
+                                               if (completion) {
+                                                   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                                                       completion(returnError);
+                                                   });
+                                               }
+                                           }];
+                        
+                        [self.operationQueue addOperation:op];
+                    } else {
+                        // TODO: Error
+                        immediateError = [NSError errorWithDomain:PIRedditErrorDomain code:-1000 userInfo:nil];
+                    }
+                    
+                    break;
+                }
+            }
+            
+            if (!foundItem) {
+                // TODO: Error
+                immediateError = [NSError errorWithDomain:PIRedditErrorDomain code:-1000 userInfo:nil];
+            }
+        } else {
+            // TODO: Error
+            immediateError = [NSError errorWithDomain:PIRedditErrorDomain code:-1000 userInfo:nil];
+        }
+    }
+    
+    if (immediateError && completion) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            completion(immediateError);
+        });
     }
 }
 
@@ -317,7 +400,7 @@ NSString * const kPIRHTTPMethodPOST = @"POST";
         return;
     }
     
-    PIRedditRESTController *REST = [[PIRedditRESTController alloc] initWithSession:[NSURLSession sharedSession] baseURL:[NSURL URLWithString:@"https://www.reddit.com/api/v1/"]];
+    PIRedditRESTController *REST = [[PIRedditRESTController alloc] initWithSession:[NSURLSession sharedSession] baseURL:[NSURL URLWithString:kPIRedditAPIBaseURL]];
 
     REST.additionalHTTPHeaders = [NSDictionary pireddit_basicAuthDictionaryWithUser:self.app.clientName];
     NSOperation *op = [REST requestOperationWithMethod:kPIRHTTPMethodPOST
