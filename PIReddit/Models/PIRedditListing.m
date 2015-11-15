@@ -45,40 +45,36 @@
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary {
     self = [super initWithDictionary:dictionary];
     if (self) {
-        BOOL valid;
+        BOOL valid = NO;
         if ([GDDynamicCast(dictionary[@"kind"], NSString) isEqualToString:@"Listing"]) {
             NSDictionary *dataDictionary = GDDynamicCast(dictionary[@"data"], NSDictionary);
             if (dataDictionary) {
-                id before = dataDictionary[@"before"];
-                id after = dataDictionary[@"after"];
-                if (before || after) {
-                    _fullNameBefore = GDDynamicCast(before, NSString);
-                    _fullNameAfter = GDDynamicCast(after, NSString);
-                    valid = YES;
-                    NSArray *children = dataDictionary[@"children"];
-                    if (children) {
-                        if ([children isKindOfClass:[NSArray class]]) {
-                            if (children.count == 0) {
-                                _children = [[self class] emptyArray];
-                            } else {
-                                NSMutableArray *mutableKindChildren = [NSMutableArray arrayWithCapacity:children.count];
-                                for (id child in children) {
-                                    NSDictionary *childDic = GDDynamicCast(child, NSDictionary);
-                                    if (childDic) {
-                                        PIRedditKind *kindChild = [PIRedditKind redditKindWithDictionary:childDic];
-                                        if (kindChild) {
-                                            [mutableKindChildren addObject:kindChild];
-                                        }
+                _fullNameBefore = GDDynamicCast(dataDictionary[@"before"], NSString);
+                _fullNameAfter = GDDynamicCast(dataDictionary[@"after"], NSString);
+                valid = YES;
+                NSArray *children = dataDictionary[@"children"];
+                if (children && (NSNull *)children != [NSNull null]) {
+                    if ([children isKindOfClass:[NSArray class]]) {
+                        if (children.count == 0) {
+                            _children = [[self class] emptyArray];
+                        } else {
+                            NSMutableArray *mutableKindChildren = [NSMutableArray arrayWithCapacity:children.count];
+                            for (id child in children) {
+                                NSDictionary *childDic = GDDynamicCast(child, NSDictionary);
+                                if (childDic) {
+                                    PIRedditKind *kindChild = [PIRedditKind redditKindWithDictionary:childDic];
+                                    if (kindChild) {
+                                        [mutableKindChildren addObject:kindChild];
                                     }
                                 }
-                                _children = [mutableKindChildren copy];
                             }
-                        } else {
-                            valid = NO;
+                            _children = [mutableKindChildren copy];
                         }
                     } else {
-                        _children = [[self class] emptyArray];
+                        valid = NO;
                     }
+                } else {
+                    _children = [[self class] emptyArray];
                 }
             }
         }

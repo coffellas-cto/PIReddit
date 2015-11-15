@@ -49,6 +49,58 @@
     XCTAssertTrue([listing.children[1] isKindOfClass:[PIRedditLink class]]);
 }
 
+- (void)testInvalid {
+    BOOL bException = NO;
+    PIRedditListing *listing;
+    @try {
+        listing = [[PIRedditListing alloc] initWithDictionary:nil];
+    }
+    @catch (NSException *exception) {
+        XCTAssertEqualObjects(exception.name, NSInternalInconsistencyException);
+        bException = YES;
+    }
+    @finally {
+        XCTAssertTrue(bException);
+    }
+    XCTAssertNil(listing);
+    listing = [[PIRedditListing alloc] initWithDictionary:(NSDictionary *)@[]];
+    XCTAssertNil(listing);
+    listing = [[PIRedditListing alloc] initWithDictionary:@{}];
+    XCTAssertNil(listing);
+    listing = [[PIRedditListing alloc] initWithDictionary:@{@"kind": @"Listing",
+                                                            @"data": [NSNull null]}];
+    XCTAssertNil(listing);
+    listing = [[PIRedditListing alloc] initWithDictionary:@{@"kind": @"Listing",
+                                                            @"data": @{@"children": @"string"}}];
+    XCTAssertNil(listing);
+    listing = [[PIRedditListing alloc] initWithDictionary:@{@"kind": @"Listing",
+                                                            @"data": @{@"children": [NSDate date]}}];
+    XCTAssertNil(listing);
+    listing = [[PIRedditListing alloc] initWithDictionary:@{@"kind": @"Listing",
+                                                            @"data": @{@"children": @{}}}];
+    XCTAssertNil(listing);
+}
+
+- (void)testEmptyChildren {
+    PIRedditListing *listing = [[PIRedditListing alloc] initWithDictionary:@{@"kind": @"Listing",
+                                                                             @"data": @{@"children": [NSNull null]}}];
+    XCTAssertNotNil(listing);
+    XCTAssertNotNil(listing.children);
+    XCTAssertEqual(listing.children.count, 0);
+    
+    listing = [[PIRedditListing alloc] initWithDictionary:@{@"kind": @"Listing",
+                                                            @"data": @{@"children": [NSArray new]}}];
+    XCTAssertNotNil(listing);
+    XCTAssertNotNil(listing.children);
+    XCTAssertEqual(listing.children.count, 0);
+    
+    listing = [[PIRedditListing alloc] initWithDictionary:@{@"kind": @"Listing",
+                                                            @"data": @{}}];
+    XCTAssertNotNil(listing);
+    XCTAssertNotNil(listing.children);
+    XCTAssertEqual(listing.children.count, 0);
+}
+
 - (void)testInvariant {
     PIRedditListing *listing = [[PIRedditListing alloc] initWithDictionary:[self loadFromFile]];
     for (int i = 0; i < 2; i++) {
