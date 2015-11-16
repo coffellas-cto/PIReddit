@@ -42,6 +42,10 @@
     return emptyArray;
 }
 
+- (NSString *)description {
+    return self.children.description;
+}
+
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary {
     self = [super initWithDictionary:dictionary];
     if (self) {

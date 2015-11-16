@@ -37,10 +37,25 @@ extern NSString * const kPIRedditKindValueComment;
  */
 @interface PIRedditComment : PIRedditKind
 
+/**
+ Comment's author's name.
+ */
 @property (readonly, copy, nonatomic) NSString *author;
+/**
+ Comment's text.
+ */
 @property (readonly, copy, nonatomic) NSString *body;
-@property (readonly, copy, nonatomic) NSString *linkID;
+/**
+ Fullname of a link the comment refers to.
+ */
+@property (readonly, copy, nonatomic) NSString *linkFullName;
+/**
+ A list of replies to comment.
+ */
 @property (readonly, copy, nonatomic) PIRedditListing *replies;
+/**
+ A date the comment was created in UTC.
+ */
 @property (readonly, strong, nonatomic) NSDate *createdUTC;
 
 @end

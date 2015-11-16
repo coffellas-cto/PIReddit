@@ -27,10 +27,40 @@
  */
 
 #import "PIRedditComment.h"
+#import "PIRedditListing.h"
 
 NSString * const kPIRedditKindValueComment = @"t1";
 
 @implementation PIRedditComment
+
+@synthesize body = _body, author = _author, linkFullName = _linkFullName, replies = _replies, createdUTC = _createdUTC;
+
+- (NSString *)author {
+    return [_author ?: (_author = GDDynamicCast(self.allFields[@"author"], NSString)) copy];
+}
+
+- (NSString *)linkFullName {
+    return [_linkFullName ?: (_linkFullName = GDDynamicCast(self.allFields[@"link_id"], NSString)) copy];
+}
+
+- (NSString *)body {
+    return [_body ?: (_body = GDDynamicCast(self.allFields[@"body"], NSString)) copy];
+}
+
+- (NSDate *)createdUTC {
+    if (!_createdUTC) {
+        NSTimeInterval createdTimeinterval = [GDDynamicCast(self.allFields[@"created_utc"], NSNumber) doubleValue];
+        if (createdTimeinterval) {
+            _createdUTC = [NSDate dateWithTimeIntervalSince1970:createdTimeinterval];
+        }
+    }
+    
+    return _createdUTC;
+}
+
+- (PIRedditListing *)replies {
+    return _replies ?: (_replies = [[PIRedditListing alloc] initWithDictionary:self.allFields[@"replies"]]);
+}
 
 - (NSString *)kind {
     return kPIRedditKindValueComment;

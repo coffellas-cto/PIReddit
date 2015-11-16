@@ -49,6 +49,6 @@
 /**
  Array containing children of generic type. Returns empty array if no children are present.
  */
-@property (readonly, strong, nonatomic) NSArray<PIRedditKind *> *children;
+@property (readonly, strong, nonatomic) NSArray<PIRedditModel *> *children;
 
 @end

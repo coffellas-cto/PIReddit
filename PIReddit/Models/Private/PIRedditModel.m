@@ -32,7 +32,6 @@
 @implementation PIRedditModel
 
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary {
-    NSParameterAssert(dictionary);
     if (![dictionary isKindOfClass:[NSDictionary class]]) {
         return nil;
     }

@@ -40,18 +40,8 @@
 }
 
 - (void)testInvalid {
-    BOOL bException = NO;
-    PIRedditListing *listing;
-    @try {
-        listing = [[PIRedditListing alloc] initWithDictionary:nil];
-    }
-    @catch (NSException *exception) {
-        XCTAssertEqualObjects(exception.name, NSInternalInconsistencyException);
-        bException = YES;
-    }
-    @finally {
-        XCTAssertTrue(bException);
-    }
+    PIRedditListing *listing = [[PIRedditListing alloc] initWithDictionary:nil];
+
     XCTAssertNil(listing);
     listing = [[PIRedditListing alloc] initWithDictionary:(NSDictionary *)@[]];
     XCTAssertNil(listing);
