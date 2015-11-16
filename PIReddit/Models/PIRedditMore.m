@@ -1,5 +1,5 @@
 //
-//  PIRedditComment.h
+//  PIRedditMore.m
 //  RedditClient
 
 /*
@@ -26,21 +26,8 @@
  THE SOFTWARE.
  */
 
-#import "PIRedditKind.h"
+#import "PIRedditMore.h"
 
-@class PIRedditListing;
-
-extern NSString * const kPIRedditKindValueComment;
-
-/**
- Class which represents Reddit "comment kind".
- */
-@interface PIRedditComment : PIRedditKind
-
-@property (readonly, copy, nonatomic) NSString *author;
-@property (readonly, copy, nonatomic) NSString *body;
-@property (readonly, copy, nonatomic) NSString *linkID;
-@property (readonly, copy, nonatomic) PIRedditListing *replies;
-@property (readonly, strong, nonatomic) NSDate *createdUTC;
+@implementation PIRedditMore
 
 @end

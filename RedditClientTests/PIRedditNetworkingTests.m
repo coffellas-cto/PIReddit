@@ -144,7 +144,7 @@
 - (void)testCommentsRetrieval {
     [self properSetup];
     XCTestExpectation *exp = [self expectationWithDescription:@(__PRETTY_FUNCTION__)];
-    [networking commentsForLink:@"2j3c5p" depth:0 limit:1 completion:^(NSError *error, id object) {
+    [networking commentsForLink:@"342rja" depth:0 limit:2 completion:^(NSError *error, id object) {
         XCTAssertNil(error);
         XCTAssertNotNil(object);
         [exp fulfill];

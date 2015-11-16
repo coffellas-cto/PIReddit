@@ -15,6 +15,9 @@
 		9A21EDCF1BF5324400FE6192 /* PIRedditKeychainManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A21EDCE1BF5324400FE6192 /* PIRedditKeychainManagerTests.m */; };
 		9A21EDD21BFA509F00FE6192 /* CommonConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A21EDD11BFA509F00FE6192 /* CommonConstants.m */; };
 		9A21EDD31BFA514400FE6192 /* CommonConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A21EDD11BFA509F00FE6192 /* CommonConstants.m */; };
+		9A21EDD51BFA5F2D00FE6192 /* listing_test_002.json in Resources */ = {isa = PBXBuildFile; fileRef = 9A21EDD41BFA5F2D00FE6192 /* listing_test_002.json */; };
+		9A21EDD71BFA603B00FE6192 /* PIRedditCommentTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A21EDD61BFA603B00FE6192 /* PIRedditCommentTests.m */; };
+		9A21EDDA1BFA63AD00FE6192 /* PIRedditMore.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A21EDD91BFA63AD00FE6192 /* PIRedditMore.m */; };
 		9A5404FD1BF126C00003DEA7 /* PIRedditComment.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A5404FC1BF126C00003DEA7 /* PIRedditComment.m */; };
 		9A7645BD1BEBF518009121B7 /* PIRedditKindTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A7645BC1BEBF518009121B7 /* PIRedditKindTests.m */; };
 		9ABE2C6C1BE94579001EEC83 /* PIRedditListing.m in Sources */ = {isa = PBXBuildFile; fileRef = 9ABE2C6B1BE94579001EEC83 /* PIRedditListing.m */; };
@@ -62,6 +65,10 @@
 		9A21EDCE1BF5324400FE6192 /* PIRedditKeychainManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PIRedditKeychainManagerTests.m; sourceTree = "<group>"; };
 		9A21EDD01BFA509F00FE6192 /* CommonConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommonConstants.h; sourceTree = "<group>"; };
 		9A21EDD11BFA509F00FE6192 /* CommonConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = CommonConstants.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		9A21EDD41BFA5F2D00FE6192 /* listing_test_002.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = listing_test_002.json; sourceTree = "<group>"; };
+		9A21EDD61BFA603B00FE6192 /* PIRedditCommentTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PIRedditCommentTests.m; sourceTree = "<group>"; };
+		9A21EDD81BFA63AD00FE6192 /* PIRedditMore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PIRedditMore.h; sourceTree = "<group>"; };
+		9A21EDD91BFA63AD00FE6192 /* PIRedditMore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PIRedditMore.m; sourceTree = "<group>"; };
 		9A5404FB1BF126C00003DEA7 /* PIRedditComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PIRedditComment.h; sourceTree = "<group>"; };
 		9A5404FC1BF126C00003DEA7 /* PIRedditComment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PIRedditComment.m; sourceTree = "<group>"; };
 		9A7645BC1BEBF518009121B7 /* PIRedditKindTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PIRedditKindTests.m; sourceTree = "<group>"; };
@@ -155,6 +162,8 @@
 				9A5404FC1BF126C00003DEA7 /* PIRedditComment.m */,
 				9ABE2C741BE951BC001EEC83 /* PIRedditLink.h */,
 				9ABE2C751BE951BC001EEC83 /* PIRedditLink.m */,
+				9A21EDD81BFA63AD00FE6192 /* PIRedditMore.h */,
+				9A21EDD91BFA63AD00FE6192 /* PIRedditMore.m */,
 				9ABE2C771BE9526E001EEC83 /* Private */,
 			);
 			path = Models;
@@ -219,6 +228,7 @@
 		9AC50A771BD8220900644F77 /* RedditClientTests */ = {
 			isa = PBXGroup;
 			children = (
+				9A21EDD61BFA603B00FE6192 /* PIRedditCommentTests.m */,
 				9ABE2C7E1BE95349001EEC83 /* PIRedditListingTests.m */,
 				9A21EDC71BF3C9EE00FE6192 /* PIRedditAppTests.m */,
 				9AC7EBC81BE4144E000949A0 /* PIRedditNetworkingTests.m */,
@@ -235,6 +245,7 @@
 				9AEA7E501BDAE05200B015E0 /* XCTest+PIReddit.h */,
 				9AEA7E511BDAE05200B015E0 /* XCTest+PIReddit.m */,
 				9ABE2C801BE95528001EEC83 /* listing_test_001.json */,
+				9A21EDD41BFA5F2D00FE6192 /* listing_test_002.json */,
 			);
 			path = RedditClientTests;
 			sourceTree = "<group>";
@@ -365,6 +376,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9ABE2C811BE95528001EEC83 /* listing_test_001.json in Resources */,
+				9A21EDD51BFA5F2D00FE6192 /* listing_test_002.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -386,6 +398,7 @@
 				9AC7EBBC1BDC282D000949A0 /* PIRedditConstants.m in Sources */,
 				9AC7EBC21BE15F8B000949A0 /* PIRedditNetworking.m in Sources */,
 				9ABE2C6C1BE94579001EEC83 /* PIRedditListing.m in Sources */,
+				9A21EDDA1BFA63AD00FE6192 /* PIRedditMore.m in Sources */,
 				9ABE2C7D1BE9526E001EEC83 /* PIRedditModel.m in Sources */,
 				9A21EDCD1BF3CD4D00FE6192 /* PIRedditKeyChainManager.m in Sources */,
 				9AC50A631BD8220900644F77 /* AppDelegate.m in Sources */,
@@ -399,6 +412,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9A21EDD71BFA603B00FE6192 /* PIRedditCommentTests.m in Sources */,
 				9ABE2C7F1BE95349001EEC83 /* PIRedditListingTests.m in Sources */,
 				9A21EDD31BFA514400FE6192 /* CommonConstants.m in Sources */,
 				9AC7EBC91BE4144E000949A0 /* PIRedditNetworkingTests.m in Sources */,

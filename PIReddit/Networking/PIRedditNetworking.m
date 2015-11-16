@@ -277,7 +277,7 @@ NSString * const kPIRedditAPIOAuthBaseURL = @"https://oauth.reddit.com/";
     params[@"article"] = linkID;
     if (limit) { params[@"limit"] = @(limit); }
     if (depth) { params[@"depth"] = @(depth); }
-    return [self requestOperationAtPath:@"comments/article" parameters:@{@"article": linkID} completion:completion];
+    return [self requestOperationAtPath:@"comments/article" parameters:params completion:completion];
 }
 
 #pragma mark - Private Methods

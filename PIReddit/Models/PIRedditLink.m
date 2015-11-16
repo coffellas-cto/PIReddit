@@ -36,31 +36,31 @@ NSString * const kPIRedditKindValueLink = @"t3";
 @synthesize subreddit = _subreddit, text = _text, author = _author, subredditID = _subredditID, permalink = _permalink, url = _url, title = _title, createdUTC = _createdUTC;
 
 - (NSString *)subreddit {
-    return _subreddit ?: (_subreddit = GDDynamicCast(self.allFields[@"subreddit"], NSString));
+    return [_subreddit ?: (_subreddit = GDDynamicCast(self.allFields[@"subreddit"], NSString)) copy];
 }
 
 - (NSString *)text {
-    return _text ?: (_text = GDDynamicCast(self.allFields[@"selftext"], NSString));
+    return [_text ?: (_text = GDDynamicCast(self.allFields[@"selftext"], NSString)) copy];
 }
 
 - (NSString *)author {
-    return _author ?: (_author = GDDynamicCast(self.allFields[@"author"], NSString));
+    return [_author ?: (_author = GDDynamicCast(self.allFields[@"author"], NSString)) copy];
 }
 
 - (NSString *)subredditID {
-    return _subredditID ?: (_subredditID = GDDynamicCast(self.allFields[@"subreddit_id"], NSString));
+    return [_subredditID ?: (_subredditID = GDDynamicCast(self.allFields[@"subreddit_id"], NSString)) copy];
 }
 
 - (NSString *)permalink {
-    return _permalink ?: (_permalink = GDDynamicCast(self.allFields[@"permalink"], NSString));
+    return [_permalink ?: (_permalink = GDDynamicCast(self.allFields[@"permalink"], NSString)) copy];
 }
 
 - (NSString *)url {
-    return _url ?: (_url = GDDynamicCast(self.allFields[@"url"], NSString));
+    return [_url ?: (_url = GDDynamicCast(self.allFields[@"url"], NSString)) copy];
 }
 
 - (NSString *)title {
-    return _title ?: (_title = GDDynamicCast(self.allFields[@"title"], NSString));
+    return [_title ?: (_title = GDDynamicCast(self.allFields[@"title"], NSString)) copy];
 }
 
 - (NSDate *)createdUTC {

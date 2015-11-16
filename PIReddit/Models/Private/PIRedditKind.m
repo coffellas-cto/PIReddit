@@ -34,6 +34,8 @@
 @implementation PIRedditKind
 @synthesize ID = _ID;
 
+// TODO: When all kind subclasses are gathered check their common fields.
+
 - (NSString *)fullName {
     return self.ID ? [NSString stringWithFormat:@"%@_%@", self.kind, self.ID] : nil;
 }
@@ -44,7 +46,7 @@
 
 + (Class)classForKind:(NSString *)kind {
     if ([kind isEqualToString:kPIRedditKindValueComment]) {
-        return [PIRedditLink class];
+        return [PIRedditComment class];
     }
     
     if ([kind isEqualToString:kPIRedditKindValueLink]) {

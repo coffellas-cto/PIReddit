@@ -66,6 +66,6 @@ extern NSString * const kPIRedditKindValueLink;
 /**
  A date the link was created in UTC.
  */
-@property (readonly, copy, nonatomic) NSDate *createdUTC;
+@property (readonly, strong, nonatomic) NSDate *createdUTC;
 
 @end

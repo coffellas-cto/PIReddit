@@ -9,6 +9,7 @@
 #import <XCTest/XCTest.h>
 #import "PIRedditListing.h"
 #import "PIRedditLink.h"
+#import "XCTest+PIReddit.h"
 
 @interface PIRedditListingTests : XCTestCase
 
@@ -26,19 +27,8 @@
     [super tearDown];
 }
 
-- (NSDictionary *)loadFromFile {
-    NSBundle *bundle = [NSBundle bundleForClass:[self class]];
-    NSString *path = [bundle pathForResource:@"listing_test_001" ofType:@"json"];
-    NSData *listingData = [NSData dataWithContentsOfFile:path];
-    
-    NSError *error;
-    NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:listingData options:0 error:&error];
-    XCTAssertNil(error);
-    return dictionary;
-}
-
 - (void)testCreation {
-    NSDictionary *dictionary = [self loadFromFile];
+    NSDictionary *dictionary = [self loadJSONFromFile:@"listing_test_001" ofType:@"json"];
     XCTAssertNotNil(dictionary);
     PIRedditListing *listing = [[PIRedditListing alloc] initWithDictionary:dictionary];
     XCTAssertNotNil(listing);
@@ -102,7 +92,7 @@
 }
 
 - (void)testInvariant {
-    PIRedditListing *listing = [[PIRedditListing alloc] initWithDictionary:[self loadFromFile]];
+    PIRedditListing *listing = [[PIRedditListing alloc] initWithDictionary:[self loadJSONFromFile:@"listing_test_001" ofType:@"json"]];
     for (int i = 0; i < 2; i++) {
         PIRedditLink *link = (PIRedditLink *)listing.children[i];
         NSLog(@"%@", link);

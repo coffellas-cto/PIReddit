@@ -11,5 +11,6 @@
 @interface XCTestCase (PIReddit)
 
 - (void)startExpectations;
+- (id)loadJSONFromFile:(NSString *)name ofType:(NSString *)ext;
 
 @end
