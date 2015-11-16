@@ -10,6 +10,7 @@
 #import "ViewController.h"
 #import "PIRedditNetworking.h"
 #import "PIRedditApp.h"
+#import "CommonConstants.h"
 
 @interface AppDelegate ()
 
@@ -34,9 +35,9 @@
     self.window.rootViewController = [ViewController new];
     [self.window makeKeyAndVisible];
     
-    PIRedditApp *app = [PIRedditApp appWithUserAgent:@"RedditClientTestiOS"
-                                         redirectURI:@"testredditclient://apiredirect"
-                                          clientName:@"nhFJDb_f9RYThw"];
+    PIRedditApp *app = [PIRedditApp appWithUserAgent:kCommonUserAgent
+                                         redirectURI:kCommonRedirectURI
+                                          clientName:kCommonClientName];
     
     [[PIRedditNetworking sharedInstance] setRedditApp:app];
     

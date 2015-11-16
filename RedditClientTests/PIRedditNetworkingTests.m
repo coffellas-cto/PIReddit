@@ -11,6 +11,7 @@
 #import "PIRedditApp_Private.h"
 #import "PIRedditListing.h"
 #import "PIRedditLink.h"
+#import "CommonConstants.h"
 
 @interface PIRedditNetworkingTests : XCTestCase
 
@@ -67,9 +68,9 @@
 }
 
 - (void)setupWithForceLogout:(BOOL)forceLogout {
-    [self setupNetworkingWithUserAgent:@"RedditClientTestiOS"
-                           redirectURI:@"testredditclient://apiredirect"
-                            clientName:@"nhFJDb_f9RYThw"
+    [self setupNetworkingWithUserAgent:kCommonUserAgent
+                           redirectURI:kCommonRedirectURI
+                            clientName:kCommonClientName
                            accessToken:@"45906542-4SEAI3f6JfQ2fKQtZB-bQf2mC0I"
                           refreshToken:@"45906542-yBkmMHPRtH5fXkz8nm43s2pvsSM"
                            forceLogout:forceLogout];
