@@ -1,5 +1,5 @@
-# PIReddit SDK v0.4.0
-**P**rogramming **I**nterface for **Reddit**
+# PIReddit SDK
+**P**rogramming **I**nterface for **Reddit** v0.4.0
 * Uses Reddit's modern OAuth 2 API.
 * No third-party dependencies needed. Just plug and play.
 * Networking is based on `NSOperation`s.
