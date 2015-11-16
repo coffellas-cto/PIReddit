@@ -33,7 +33,7 @@
     XCTAssertNotNil(listing);
     XCTAssertEqual(listing.children.count, 2);
     for (int i = 0; i < 2; i++) {
-        PIRedditComment *comment = (PIRedditComment *)listing.children[i];
+        PIRedditComment *comment = listing.children[i];
         XCTAssertTrue([comment isKindOfClass:[PIRedditComment class]]);
         XCTAssertEqualObjects(comment.kind, @"t1");
         XCTAssertEqualObjects(comment.linkFullName, @"t3_342rja");

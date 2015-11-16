@@ -125,8 +125,8 @@
         XCTAssertNil(error);
         XCTAssertNotNil(listing);
         XCTAssertEqual(listing.children.count, 2);
-        PIRedditLink *fakeAfter = (PIRedditLink *)listing.children[0];
-        PIRedditLink *lastLink = (PIRedditLink *)listing.children[1];
+        PIRedditLink *fakeAfter = listing.children[0];
+        PIRedditLink *lastLink = listing.children[1];
         XCTAssertEqualObjects(listing.fullNameAfter, lastLink.fullName);
         [networking searchFor:@"lineage" limit:2 fullNameBefore:nil fullNameAfter:fakeAfter.fullName subreddit:@"games" time:PIRedditTimeAll otherParams:nil completion:^(NSError *error, PIRedditListing *listing2) {
             XCTAssertNil(error);

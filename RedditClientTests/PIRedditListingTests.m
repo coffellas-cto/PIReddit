@@ -84,7 +84,7 @@
 - (void)testInvariant {
     PIRedditListing *listing = [[PIRedditListing alloc] initWithDictionary:[self loadJSONFromFile:@"listing_test_001" ofType:@"json"]];
     for (int i = 0; i < 2; i++) {
-        PIRedditLink *link = (PIRedditLink *)listing.children[i];
+        PIRedditLink *link = listing.children[i];
         NSLog(@"%@", link);
         switch (i) {
             case 0:
