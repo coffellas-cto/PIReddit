@@ -18,6 +18,7 @@
 		9A21EDD51BFA5F2D00FE6192 /* listing_test_002.json in Resources */ = {isa = PBXBuildFile; fileRef = 9A21EDD41BFA5F2D00FE6192 /* listing_test_002.json */; };
 		9A21EDD71BFA603B00FE6192 /* PIRedditCommentTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A21EDD61BFA603B00FE6192 /* PIRedditCommentTests.m */; };
 		9A21EDDA1BFA63AD00FE6192 /* PIRedditMore.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A21EDD91BFA63AD00FE6192 /* PIRedditMore.m */; };
+		9A21EDDC1BFD081D00FE6192 /* PIRedditModelTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A21EDDB1BFD081D00FE6192 /* PIRedditModelTests.m */; };
 		9A5404FD1BF126C00003DEA7 /* PIRedditComment.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A5404FC1BF126C00003DEA7 /* PIRedditComment.m */; };
 		9A7645BD1BEBF518009121B7 /* PIRedditKindTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A7645BC1BEBF518009121B7 /* PIRedditKindTests.m */; };
 		9ABE2C6C1BE94579001EEC83 /* PIRedditListing.m in Sources */ = {isa = PBXBuildFile; fileRef = 9ABE2C6B1BE94579001EEC83 /* PIRedditListing.m */; };
@@ -69,6 +70,7 @@
 		9A21EDD61BFA603B00FE6192 /* PIRedditCommentTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PIRedditCommentTests.m; sourceTree = "<group>"; };
 		9A21EDD81BFA63AD00FE6192 /* PIRedditMore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PIRedditMore.h; sourceTree = "<group>"; };
 		9A21EDD91BFA63AD00FE6192 /* PIRedditMore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PIRedditMore.m; sourceTree = "<group>"; };
+		9A21EDDB1BFD081D00FE6192 /* PIRedditModelTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PIRedditModelTests.m; sourceTree = "<group>"; };
 		9A5404FB1BF126C00003DEA7 /* PIRedditComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PIRedditComment.h; sourceTree = "<group>"; };
 		9A5404FC1BF126C00003DEA7 /* PIRedditComment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PIRedditComment.m; sourceTree = "<group>"; };
 		9A7645BC1BEBF518009121B7 /* PIRedditKindTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PIRedditKindTests.m; sourceTree = "<group>"; };
@@ -239,6 +241,7 @@
 				9AC7EBBE1BDEBF9D000949A0 /* PIRMockSession.m */,
 				9A7645BC1BEBF518009121B7 /* PIRedditKindTests.m */,
 				9A21EDCE1BF5324400FE6192 /* PIRedditKeychainManagerTests.m */,
+				9A21EDDB1BFD081D00FE6192 /* PIRedditModelTests.m */,
 				9AC50A7A1BD8220900644F77 /* Info.plist */,
 				9AC7EBC31BE16389000949A0 /* TestAppDelegate.h */,
 				9AC7EBC41BE16389000949A0 /* TestAppDelegate.m */,
@@ -418,6 +421,7 @@
 				9AC7EBC91BE4144E000949A0 /* PIRedditNetworkingTests.m in Sources */,
 				9A06B5311BDC23AD009F2EEC /* PIRedditSerializationStrategyTests.m in Sources */,
 				9A06B5281BDC08B4009F2EEC /* PIRedditRESTControllerTests.m in Sources */,
+				9A21EDDC1BFD081D00FE6192 /* PIRedditModelTests.m in Sources */,
 				9A7645BD1BEBF518009121B7 /* PIRedditKindTests.m in Sources */,
 				9AC7EBBF1BDEBF9D000949A0 /* PIRMockSession.m in Sources */,
 				9A21EDCF1BF5324400FE6192 /* PIRedditKeychainManagerTests.m in Sources */,

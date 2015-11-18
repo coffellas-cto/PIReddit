@@ -40,7 +40,7 @@
 }
 
 - (instancetype)init {
-    return [super init];
+    return [self initWithDictionary:nil];
 }
 
 @end
